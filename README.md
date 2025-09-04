@@ -4,44 +4,94 @@ Clipp is a Chrome extension that automatically finds and applies discount codes 
 
 ## ✨ Features
 
-- **Automatic Coupon Testing**: Tests discount codes on supported store checkouts
+- **Automatic Coupon Testing**: Tests discount codes on supported store checkouts with animated progress
 - **Real-time Code Discovery**: Shows current available codes when visiting stores  
 - **Statistics Tracking**: Tracks purchases and savings in `chrome.storage.local`
 - **Multi-language Support**: Swedish (default) and English with flag switching
-- **100+ Supported Stores**: Major Swedish and international retailers
+- **120+ Supported Stores**: Major Swedish and international retailers across all categories
 - **Manual Purchase Tracking**: "Mark as purchased" button for manual tracking
-- **Modern UI**: Blue (#3b82f6) and white design with animations
+- **Modern UI**: Blue (#3b82f6) and white design with rounded corners and animations
+- **Three-Section Popup**: Ongoing code testing, active deals, and user statistics
 
 ## 📦 Installation
 
-### Local Installation
+### Installation locally
 1. Open Chrome → `chrome://extensions/`
 2. Enable **Developer mode** (top-right)
-3. Click **Load unpacked** → Select extension folder
-4. Verify Clipp icon appears in toolbar
+3. Click **Load unpacked** → Select the project folder
+4. Extension is installed and can be tested directly
+5. Verify Clipp icon appears in toolbar
 
-### Adding New Stores
-1. Edit `config/stores.json`
-2. Add store with selectors and URL patterns
-3. Update `manifest.json` permissions
-4. Reload extension at `chrome://extensions/`
+### Adding a new store
+1. Open `config/stores.json`
+2. Add new object with `id`, `name`, `domainPatterns`, `couponInputSelectors`, `applyButtonSelectors`
+3. Save file and reload extension in `chrome://extensions/`
+4. New store will be automatically supported
+
+Example store structure:
+```json
+{
+  "id": "example",
+  "name": "Example Store", 
+  "domain": "example.com",
+  "category": "Mode & Skönhet",
+  "color": "#3b82f6",
+  "active": true,
+  "selectors": {
+    "coupon_input": "input[name='voucher']", 
+    "apply_button": "button.applyVoucher",
+    "cart_button": ".add-to-cart",
+    "checkout_button": ".checkout"
+  },
+  "url_patterns": [
+    "https://example.com/*",
+    "https://www.example.com/*"
+  ]
+}
+```
+
+### Updating discount codes
+- Codes can be stored in a separate JSON file or fetched via API
+- Built-in module for integration with couponfollow.com and other sources
+- Change file → reload extension to update codes
+- System automatically fetches fresh codes when available
 
 ### Publishing to Chrome Web Store
-1. Create ZIP of project folder
-2. Upload via Chrome Developer Dashboard
-3. Fill in metadata and screenshots
-4. Submit for review (1-7 days)
+1. Create ZIP of the project folder
+2. Upload via Chrome Developer Dashboard  
+3. Fill in title, description, screenshots, privacy policy
+4. Submit for review (review time: 1-7 days)
 
-## 🏪 Supported Stores (100+)
+## 🏪 Supported Stores (120+)
 
-**Mode & Skönhet**: Zalando, H&M, Nelly, Ellos, Åhléns, Gina Tricot, Weekday, COS, Monki
-**Sport**: Stadium, XXL, Nike, Adidas, JD Sports, Foot Locker  
-**Elektronik**: CDON, Webhallen, MediaMarkt, Apple Store, Samsung, Elgiganten
-**Hem & Inredning**: IKEA, Jotex, Hemtex, RoyalDesign, Cervera, Nordic Nest
-**Skönhet**: Lyko, KICKS, Apotea, Sephora, NordicFeel
-**Övrigt**: Amazon.se, ASOS, Zara, Uniqlo, eBay, AliExpress
+### Mode & Skönhet (25 stores)
+Zalando, Boozt, NA-KD, Nelly, Ellos, H&M, Åhléns, Gina Tricot, KappAhl, Lindex, Dressmann, Cubus, Bubbleroom, Stadium, XXL, JD Sports, Nike, Adidas, Foot Locker, Monki, COS, Arket, Acne Studios, Mango, Zara
 
-*Complete list in `config/stores.json`*
+### Elektronik (20 stores)  
+CDON, NetOnNet, Webhallen, Dustin, Komplett, MediaMarkt, Elgiganten, Teknikmagasinet, Kjell & Company, Inet, Apple Store, Samsung, Sony, Microsoft Store, Lenovo, HP, Logitech, OnePlus, Philips, LG
+
+### Böcker & Media (10 stores)
+Adlibris, Bokus, Akademibokhandeln, Discshop, CDJapan, Audible, Storytel, Nextory, Bookbeat, SF Anytime
+
+### Hem & Inredning (20 stores)
+IKEA, Jotex, Hemtex, RoyalDesign, Cervera, Nordic Nest, Mio, Furniturebox, Confident Living, Rum21, Desenio, Granit, Lagerhaus, Hafa, Byggmax, Bauhaus, Hornbach, Clas Ohlson, Plantagen, Chilli
+
+### Skönhet & Hälsa (15 stores)
+Lyko, KICKS, Apotea, Apotek Hjärtat, Kronans Apotek, Sephora, NordicFeel, Cocopanda, Yves Rocher, The Body Shop, Dermosil, Hudoteket, Eleven, Skincity, Glossybox
+
+### Barn & Leksaker (10 stores)
+Jollyroom, Lekia, Babyshop, Babyland, Lego, BR Leksaker, Toys R Us, Barnparadiset, MICKI, Fisher-Price
+
+### Resor & Transport (10 stores)
+SJ, SAS, Norwegian, Flixbus, Booking.com, Hotels.com, Expedia, Hertz, Avis, Sixt
+
+### Mat & Livsmedel (10 stores)
+Mathem, Coop Online, ICA Online, Willys, Hemköp, Godis365, Matsmart, CityGross, Delitea, Apotea (kosttillskott)
+
+### Internationellt (10 stores)
+Amazon.se, eBay, Aliexpress, Wish, Shein, Etsy, Zalando Lounge, Asos, Farfetch, Net-a-Porter
+
+**Total: ~120 butiker** - *Complete configuration available in `config/stores.json`*
 
 ## 🛠️ Technical Structure
 
