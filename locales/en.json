@@ -1,0 +1,73 @@
+{
+  "extension_name": "Clipp",
+  "extension_description": "Save money smarter – automatically",
+  "tagline": "Save money smarter – automatically",
+  
+  "popup": {
+    "store_status": {
+      "not_supported": "No support for this site",
+      "not_supported_desc": "Visit one of our supported stores to start saving",
+      "supported": "is ready to help you save money",
+      "scanning": "Searching for discount codes...",
+      "found_coupons": "Discount codes found!",
+      "no_coupons": "No discount codes found for this store",
+      "error": "Error searching for discount codes"
+    },
+    
+    "statistics": {
+      "title": "Your Clipp statistics",
+      "purchases": "Purchases via Clipp",
+      "total_saved": "Total saved",
+      "currency": "SEK"
+    },
+    
+    "stores": {
+      "title": "Supported stores",
+      "visit_store": "Visit store"
+    },
+    
+    "coupons": {
+      "apply_button": "Apply",
+      "applying": "Applying...",
+      "applied_success": "✅ Applied!",
+      "applied_failed": "❌ Doesn't work",
+      "error": "❌ Error"
+    },
+    
+    "footer": {
+      "privacy": "Privacy",
+      "support": "Support",
+      "terms": "Terms"
+    }
+  },
+  
+  "content_script": {
+    "popup_title": "Clipp",
+    "scanning_message": "Searching for discount codes...",
+    "found_message": "🎉 Discount codes found!",
+    "no_coupons_message": "No discount codes found for this store",
+    "error_message": "Error searching for discount codes",
+    "notification_indicator": "!",
+    
+    "coupon_popup": {
+      "title": "Discount code found!",
+      "subtitle": "Clipp found a discount code for you",
+      "apply_button": "Apply code",
+      "dismiss_button": "Dismiss",
+      "close_button": "Close"
+    }
+  },
+  
+  "notifications": {
+    "coupon_found": "Discount code found on {store}!",
+    "coupon_applied": "Discount code applied! You saved {amount} {currency}",
+    "scan_complete": "Scan complete for {store}"
+  },
+  
+  "errors": {
+    "network_error": "Network error - please try again later",
+    "store_not_supported": "This store is not supported yet",
+    "coupon_apply_failed": "Failed to apply discount code",
+    "unknown_error": "An unknown error occurred"
+  }
+}

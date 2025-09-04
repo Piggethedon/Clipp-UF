@@ -1,0 +1,267 @@
+/* Clipp Popup Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 380px;
+    min-height: 500px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #f8faff 0%, #f1f5ff 100%);
+    color: #1f2937;
+}
+
+.clipp-popup-container {
+    padding: 0;
+}
+
+/* Header */
+.clipp-popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 20px 16px;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+}
+
+.clipp-logo-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.clipp-popup-logo {
+    width: 28px;
+    height: 28px;
+    filter: brightness(0) invert(1);
+}
+
+.clipp-popup-header h1 {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.clipp-language-switcher {
+    display: flex;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px;
+    border-radius: 8px;
+}
+
+.clipp-lang-btn {
+    background: none;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.clipp-lang-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.clipp-lang-btn.active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Tagline */
+.clipp-tagline {
+    text-align: center;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #e0f2fe, #e1f5fe);
+    font-size: 14px;
+    color: #0369a1;
+    font-weight: 500;
+}
+
+/* Store Status */
+.clipp-store-status {
+    padding: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.clipp-status-inactive,
+.clipp-status-active {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    background: white;
+    border: 1px solid #e5e7eb;
+}
+
+.clipp-status-active {
+    background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+    border-color: #bbf7d0;
+}
+
+.clipp-status-icon {
+    font-size: 24px;
+}
+
+.clipp-store-status h3 {
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.clipp-store-status p {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* Statistics */
+.clipp-stats-section {
+    padding: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.clipp-stats-section h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+    color: #374151;
+}
+
+.clipp-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.clipp-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.clipp-stat-icon {
+    font-size: 20px;
+}
+
+.clipp-stat-content {
+    flex: 1;
+}
+
+.clipp-stat-label {
+    font-size: 11px;
+    color: #6b7280;
+    margin-bottom: 2px;
+}
+
+.clipp-stat-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #059669;
+}
+
+/* Supported Stores */
+.clipp-stores-section {
+    padding: 20px;
+}
+
+.clipp-stores-section h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+    color: #374151;
+}
+
+.clipp-stores-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.clipp-store-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 8px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.clipp-store-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #3b82f6;
+}
+
+.clipp-store-logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    object-fit: cover;
+}
+
+.clipp-store-name {
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    color: #374151;
+}
+
+.clipp-store-category {
+    font-size: 10px;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+/* Footer */
+.clipp-popup-footer {
+    padding: 16px 20px;
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.clipp-footer-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.clipp-footer-links a {
+    color: #6b7280;
+    text-decoration: none;
+}
+
+.clipp-footer-links a:hover {
+    color: #3b82f6;
+}
+
+.clipp-separator {
+    color: #d1d5db;
+}
+
+.clipp-version {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.clipp-popup-container {
+    animation: fadeIn 0.3s ease;
+}

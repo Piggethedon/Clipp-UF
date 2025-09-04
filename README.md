@@ -1,73 +1,130 @@
-# Welcome to your Lovable project
+# Clipp - Chrome Extension 🛒💰
 
-## Project info
+**Clipp** is a smart Chrome extension that automatically finds and applies discount codes for Swedish online stores. Save time and money on every purchase with our intelligent coupon discovery system.
 
-**URL**: https://lovable.dev/projects/b75bcf83-1f01-4abe-bbae-f6394895095b
+## ✨ Features
 
-## How can I edit this code?
+- **🔍 Automatic Code Discovery**: Scans thousands of discount codes in seconds
+- **🇸🇪 Swedish Store Support**: Specially optimized for Zalando, Adlibris, Lyko, CDON, and Tradera
+- **📊 Purchase Statistics**: Track your savings and successful purchases
+- **🌍 Multi-language Support**: Swedish (default) and English interface
+- **⚡ Real-time Application**: Automatically applies codes during checkout
+- **🔒 Privacy-focused**: All data stored locally on your device
 
-There are several ways of editing your application.
+## 🚀 Installation
 
-**Use Lovable**
+### Manual Installation (Developer Mode)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/b75bcf83-1f01-4abe-bbae-f6394895095b) and start prompting.
+1. **Download the Extension**
+   - Download or clone this repository to your computer
 
-Changes made via Lovable will be committed automatically to this repo.
+2. **Install in Chrome**
+   - Open Chrome and navigate to `chrome://extensions/`
+   - Enable "Developer mode" (toggle in top-right corner)
+   - Click "Load unpacked"
+   - Select the project folder containing `manifest.json`
+   - The Clipp extension should now appear in your extensions list
 
-**Use your preferred IDE**
+3. **Verify Installation**
+   - Look for the Clipp icon in your Chrome toolbar
+   - Visit a supported store (e.g., zalando.se) to test functionality
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🛍️ Supported Stores
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+| Store | Category | Status |
+|-------|----------|--------|
+| **Zalando** | Fashion & Shoes | ✅ Active |
+| **Adlibris** | Books & Media | ✅ Active |
+| **Lyko** | Beauty & Cosmetics | ✅ Active |
+| **CDON** | Electronics & Games | ✅ Active |
+| **Tradera** | Auctions & Marketplace | ✅ Active |
 
-Follow these steps:
+## 📁 Project Structure
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+clipp-extension/
+├── manifest.json              # Extension configuration (Manifest v3)
+├── background.js             # Service worker for extension logic
+├── content.js                # Content script injected into store pages
+├── content.css               # Styles for content script UI
+├── popup.html                # Extension popup interface
+├── popup.js                  # Popup functionality
+├── popup.css                 # Popup styles
+├── config/
+│   └── stores.json           # Store configurations and selectors
+├── locales/
+│   ├── sv.json              # Swedish translations
+│   └── en.json              # English translations
+└── icons/
+    ├── icon16.png           # Extension icons
+    ├── icon32.png
+    ├── icon48.png
+    ├── icon128.png
+    ├── flag-sv.png          # Language flags
+    └── flag-en.png
 ```
 
-**Edit a file directly in GitHub**
+## ⚙️ Configuration
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Adding New Stores
 
-**Use GitHub Codespaces**
+Edit `config/stores.json` to add support for additional stores:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```json
+{
+  "id": "new-store",
+  "name": "New Store", 
+  "domain": "newstore.com",
+  "selectors": {
+    "coupon_input": "input[name='coupon']",
+    "apply_button": ".apply-coupon-btn"
+  }
+}
+```
 
-## What technologies are used for this project?
+### Updating Languages
 
-This project is built with:
+Modify `locales/sv.json` or `locales/en.json` to update interface text.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🔧 Development & Testing
 
-## How can I deploy this project?
+1. **Make changes** to extension files
+2. **Reload extension**: Go to `chrome://extensions/` → Find Clipp → Click reload 🔄
+3. **Test**: Visit supported store websites
 
-Simply open [Lovable](https://lovable.dev/projects/b75bcf83-1f01-4abe-bbae-f6394895095b) and click on Share -> Publish.
+### Debug Console Access
 
-## Can I connect a custom domain to my Lovable project?
+- **Background Script**: `chrome://extensions/` → Clipp → "service worker" link
+- **Content Script**: Browser DevTools (F12) on store pages
+- **Popup**: Right-click extension icon → "Inspect popup"
 
-Yes, you can!
+## 🛡️ Privacy & Security
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- All statistics stored locally on your device
+- No personal data collection
+- Minimal permissions requested
+- Open source transparency
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## 🛠️ Building for Chrome Web Store
+
+1. Update version in `manifest.json`
+2. Create zip file: `zip -r clipp-extension.zip . -x "*.git*" "README.md"`
+3. Upload to Chrome Web Store Developer Dashboard
+
+## 🐛 Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| Extension not working | Reload extension in `chrome://extensions/` |
+| Popup not opening | Check for JavaScript errors in DevTools |
+| Coupons not applying | Verify store selectors in `config/stores.json` |
+
+## 📞 Support
+
+- **Issues**: Create GitHub issues for bugs/feature requests
+- **Email**: support@clipp.se
+- **Website**: [clipp.se](https://clipp.se)
+
+---
+
+**Made with ❤️ for Swedish shoppers** 🇸🇪

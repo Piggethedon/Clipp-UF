@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clipp - Spara pengar smartare</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="clipp-popup-container">
+        <!-- Header -->
+        <div class="clipp-popup-header">
+            <div class="clipp-logo-container">
+                <img src="icons/icon32.png" alt="Clipp" class="clipp-popup-logo">
+                <h1>Clipp</h1>
+            </div>
+            <div class="clipp-language-switcher">
+                <button class="clipp-lang-btn active" data-lang="sv">
+                    <img src="icons/flag-sv.png" alt="Svenska" width="16" height="12">
+                </button>
+                <button class="clipp-lang-btn" data-lang="en">
+                    <img src="icons/flag-en.png" alt="English" width="16" height="12">
+                </button>
+            </div>
+        </div>
+
+        <!-- Tagline -->
+        <div class="clipp-tagline">
+            <span id="tagline-text">Spara pengar smartare – automatiskt</span>
+        </div>
+
+        <!-- Current Store Status -->
+        <div class="clipp-store-status" id="store-status">
+            <div class="clipp-status-inactive" id="status-inactive">
+                <div class="clipp-status-icon">🛍️</div>
+                <div>
+                    <h3 id="status-title">Inget stöd för denna sida</h3>
+                    <p id="status-desc">Besök en av våra stödda butiker för att börja spara</p>
+                </div>
+            </div>
+            
+            <div class="clipp-status-active" id="status-active" style="display: none;">
+                <div class="clipp-status-icon">✅</div>
+                <div>
+                    <h3 id="active-store-name">Zalando</h3>
+                    <p id="active-store-desc">Clipp är redo att hjälpa dig spara pengar</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="clipp-stats-section">
+            <h3 id="stats-title">Din Clipp-statistik</h3>
+            <div class="clipp-stats-grid">
+                <div class="clipp-stat-card">
+                    <div class="clipp-stat-icon">🛒</div>
+                    <div class="clipp-stat-content">
+                        <div class="clipp-stat-label" id="purchases-label">Köp via Clipp</div>
+                        <div class="clipp-stat-value" id="purchases-value">0</div>
+                    </div>
+                </div>
+                <div class="clipp-stat-card">
+                    <div class="clipp-stat-icon">💰</div>
+                    <div class="clipp-stat-content">
+                        <div class="clipp-stat-label" id="savings-label">Totalt sparat</div>
+                        <div class="clipp-stat-value" id="savings-value">0 SEK</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Supported Stores -->
+        <div class="clipp-stores-section">
+            <h3 id="stores-title">Stödda butiker</h3>
+            <div class="clipp-stores-grid" id="stores-grid">
+                <!-- Stores will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="clipp-popup-footer">
+            <div class="clipp-footer-links">
+                <a href="#" id="privacy-link">Integritet</a>
+                <span class="clipp-separator">•</span>
+                <a href="#" id="support-link">Support</a>
+            </div>
+            <div class="clipp-version">v1.0.0</div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
