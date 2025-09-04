@@ -29,26 +29,56 @@
             <span id="tagline-text">Spara pengar smartare – automatiskt</span>
         </div>
 
-        <!-- Current Store Status -->
-        <div class="clipp-store-status" id="store-status">
-            <div class="clipp-status-inactive" id="status-inactive">
-                <div class="clipp-status-icon">🛍️</div>
-                <div>
-                    <h3 id="status-title">Inget stöd för denna sida</h3>
-                    <p id="status-desc">Besök en av våra stödda butiker för att börja spara</p>
+        <!-- Section 1: Pågående kodtestning -->
+        <div class="clipp-testing-section" id="testing-section">
+            <h3 id="testing-title">Pågående kodtestning</h3>
+            <div class="clipp-testing-content" id="testing-content">
+                <div class="clipp-testing-idle" id="testing-idle">
+                    <div class="clipp-testing-icon">💤</div>
+                    <p id="testing-idle-text">Väntar på att du ska handla...</p>
                 </div>
-            </div>
-            
-            <div class="clipp-status-active" id="status-active" style="display: none;">
-                <div class="clipp-status-icon">✅</div>
-                <div>
-                    <h3 id="active-store-name">Zalando</h3>
-                    <p id="active-store-desc">Clipp är redo att hjälpa dig spara pengar</p>
+                
+                <div class="clipp-testing-active" id="testing-active" style="display: none;">
+                    <div class="clipp-testing-spinner">
+                        <div class="clipp-spinner"></div>
+                    </div>
+                    <div class="clipp-testing-info">
+                        <h4 id="testing-code">Testar kod: SAVE20</h4>
+                        <p id="testing-status">Kontrollerar rabatt...</p>
+                    </div>
+                </div>
+                
+                <div class="clipp-testing-result" id="testing-result" style="display: none;">
+                    <div class="clipp-result-icon" id="result-icon">✅</div>
+                    <div class="clipp-result-info">
+                        <h4 id="result-title">Kod fungerar!</h4>
+                        <p id="result-desc">Sparade 150 SEK</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Statistics Section -->
+        <!-- Section 2: Aktiva deals -->
+        <div class="clipp-deals-section" id="deals-section">
+            <h3 id="deals-title">Aktiva deals</h3>
+            <div class="clipp-deals-content" id="deals-content">
+                <div class="clipp-deals-loading" id="deals-loading">
+                    <div class="clipp-spinner"></div>
+                    <p id="deals-loading-text">Söker rabattkoder...</p>
+                </div>
+                
+                <div class="clipp-deals-list" id="deals-list" style="display: none;">
+                    <!-- Deals will be populated by JavaScript -->
+                </div>
+                
+                <div class="clipp-deals-empty" id="deals-empty" style="display: none;">
+                    <div class="clipp-empty-icon">😕</div>
+                    <p id="deals-empty-text">Inga koder hittades just nu</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Din Clipp-statistik -->
         <div class="clipp-stats-section">
             <h3 id="stats-title">Din Clipp-statistik</h3>
             <div class="clipp-stats-grid">
@@ -67,13 +97,13 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Supported Stores -->
-        <div class="clipp-stores-section">
-            <h3 id="stores-title">Stödda butiker</h3>
-            <div class="clipp-stores-grid" id="stores-grid">
-                <!-- Stores will be populated by JavaScript -->
+            
+            <!-- Manual Purchase Button -->
+            <div class="clipp-manual-purchase" id="manual-purchase" style="display: none;">
+                <button class="clipp-manual-btn" id="manual-purchase-btn">
+                    <span>📝</span>
+                    <span id="manual-btn-text">Markera som köpt</span>
+                </button>
             </div>
         </div>
 

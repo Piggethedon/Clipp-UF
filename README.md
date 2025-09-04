@@ -1,130 +1,78 @@
-# Clipp - Chrome Extension 🛒💰
+# 🛒 Clipp - Swedish Discount Code Assistant
 
-**Clipp** is a smart Chrome extension that automatically finds and applies discount codes for Swedish online stores. Save time and money on every purchase with our intelligent coupon discovery system.
+Clipp is a Chrome extension that automatically finds and applies discount codes for Swedish online stores. Based on the Syrup project, Clipp helps Swedish shoppers save money by automatically testing available coupon codes during checkout.
 
 ## ✨ Features
 
-- **🔍 Automatic Code Discovery**: Scans thousands of discount codes in seconds
-- **🇸🇪 Swedish Store Support**: Specially optimized for Zalando, Adlibris, Lyko, CDON, and Tradera
-- **📊 Purchase Statistics**: Track your savings and successful purchases
-- **🌍 Multi-language Support**: Swedish (default) and English interface
-- **⚡ Real-time Application**: Automatically applies codes during checkout
-- **🔒 Privacy-focused**: All data stored locally on your device
+- **Automatic Coupon Testing**: Tests discount codes on supported store checkouts
+- **Real-time Code Discovery**: Shows current available codes when visiting stores  
+- **Statistics Tracking**: Tracks purchases and savings in `chrome.storage.local`
+- **Multi-language Support**: Swedish (default) and English with flag switching
+- **100+ Supported Stores**: Major Swedish and international retailers
+- **Manual Purchase Tracking**: "Mark as purchased" button for manual tracking
+- **Modern UI**: Blue (#3b82f6) and white design with animations
 
-## 🚀 Installation
+## 📦 Installation
 
-### Manual Installation (Developer Mode)
-
-1. **Download the Extension**
-   - Download or clone this repository to your computer
-
-2. **Install in Chrome**
-   - Open Chrome and navigate to `chrome://extensions/`
-   - Enable "Developer mode" (toggle in top-right corner)
-   - Click "Load unpacked"
-   - Select the project folder containing `manifest.json`
-   - The Clipp extension should now appear in your extensions list
-
-3. **Verify Installation**
-   - Look for the Clipp icon in your Chrome toolbar
-   - Visit a supported store (e.g., zalando.se) to test functionality
-
-## 🛍️ Supported Stores
-
-| Store | Category | Status |
-|-------|----------|--------|
-| **Zalando** | Fashion & Shoes | ✅ Active |
-| **Adlibris** | Books & Media | ✅ Active |
-| **Lyko** | Beauty & Cosmetics | ✅ Active |
-| **CDON** | Electronics & Games | ✅ Active |
-| **Tradera** | Auctions & Marketplace | ✅ Active |
-
-## 📁 Project Structure
-
-```
-clipp-extension/
-├── manifest.json              # Extension configuration (Manifest v3)
-├── background.js             # Service worker for extension logic
-├── content.js                # Content script injected into store pages
-├── content.css               # Styles for content script UI
-├── popup.html                # Extension popup interface
-├── popup.js                  # Popup functionality
-├── popup.css                 # Popup styles
-├── config/
-│   └── stores.json           # Store configurations and selectors
-├── locales/
-│   ├── sv.json              # Swedish translations
-│   └── en.json              # English translations
-└── icons/
-    ├── icon16.png           # Extension icons
-    ├── icon32.png
-    ├── icon48.png
-    ├── icon128.png
-    ├── flag-sv.png          # Language flags
-    └── flag-en.png
-```
-
-## ⚙️ Configuration
+### Local Installation
+1. Open Chrome → `chrome://extensions/`
+2. Enable **Developer mode** (top-right)
+3. Click **Load unpacked** → Select extension folder
+4. Verify Clipp icon appears in toolbar
 
 ### Adding New Stores
+1. Edit `config/stores.json`
+2. Add store with selectors and URL patterns
+3. Update `manifest.json` permissions
+4. Reload extension at `chrome://extensions/`
 
-Edit `config/stores.json` to add support for additional stores:
+### Publishing to Chrome Web Store
+1. Create ZIP of project folder
+2. Upload via Chrome Developer Dashboard
+3. Fill in metadata and screenshots
+4. Submit for review (1-7 days)
 
-```json
-{
-  "id": "new-store",
-  "name": "New Store", 
-  "domain": "newstore.com",
-  "selectors": {
-    "coupon_input": "input[name='coupon']",
-    "apply_button": ".apply-coupon-btn"
-  }
-}
+## 🏪 Supported Stores (100+)
+
+**Mode & Skönhet**: Zalando, H&M, Nelly, Ellos, Åhléns, Gina Tricot, Weekday, COS, Monki
+**Sport**: Stadium, XXL, Nike, Adidas, JD Sports, Foot Locker  
+**Elektronik**: CDON, Webhallen, MediaMarkt, Apple Store, Samsung, Elgiganten
+**Hem & Inredning**: IKEA, Jotex, Hemtex, RoyalDesign, Cervera, Nordic Nest
+**Skönhet**: Lyko, KICKS, Apotea, Sephora, NordicFeel
+**Övrigt**: Amazon.se, ASOS, Zara, Uniqlo, eBay, AliExpress
+
+*Complete list in `config/stores.json`*
+
+## 🛠️ Technical Structure
+
+```
+├── manifest.json          # Extension manifest (V3)
+├── background.js          # Service worker
+├── content.js             # DOM interaction
+├── popup.html/js/css      # Popup interface
+├── config/stores.json     # Store configurations  
+├── locales/sv.json        # Swedish translations
+├── locales/en.json        # English translations
+└── icons/                 # Extension and flag icons
 ```
 
-### Updating Languages
+## 📊 Statistics Tracking
 
-Modify `locales/sv.json` or `locales/en.json` to update interface text.
+Data stored in `chrome.storage.local`:
+- Purchase count via Clipp
+- Total amount saved (SEK)
+- Transaction history with dates, stores, codes used
 
-## 🔧 Development & Testing
+## 🔒 Privacy
 
-1. **Make changes** to extension files
-2. **Reload extension**: Go to `chrome://extensions/` → Find Clipp → Click reload 🔄
-3. **Test**: Visit supported store websites
+- Only anonymous statistics saved locally
+- No personal data sent to external servers
+- Required permissions: `activeTab`, `storage`, `tabs`
 
-### Debug Console Access
+## 📝 License
 
-- **Background Script**: `chrome://extensions/` → Clipp → "service worker" link
-- **Content Script**: Browser DevTools (F12) on store pages
-- **Popup**: Right-click extension icon → "Inspect popup"
-
-## 🛡️ Privacy & Security
-
-- All statistics stored locally on your device
-- No personal data collection
-- Minimal permissions requested
-- Open source transparency
-
-## 🛠️ Building for Chrome Web Store
-
-1. Update version in `manifest.json`
-2. Create zip file: `zip -r clipp-extension.zip . -x "*.git*" "README.md"`
-3. Upload to Chrome Web Store Developer Dashboard
-
-## 🐛 Troubleshooting
-
-| Problem | Solution |
-|---------|----------|
-| Extension not working | Reload extension in `chrome://extensions/` |
-| Popup not opening | Check for JavaScript errors in DevTools |
-| Coupons not applying | Verify store selectors in `config/stores.json` |
-
-## 📞 Support
-
-- **Issues**: Create GitHub issues for bugs/feature requests
-- **Email**: support@clipp.se
-- **Website**: [clipp.se](https://clipp.se)
+MIT License - Based on [Syrup](https://github.com/Abdallah-Alwarawreh/Syrup)
 
 ---
 
-**Made with ❤️ for Swedish shoppers** 🇸🇪
+**Happy shopping with Clipp!** 🛒💙

@@ -5,7 +5,7 @@
       "name": "Zalando",
       "domain": "zalando.se",
       "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
-      "category": "Mode",
+      "category": "Mode & Skönhet",
       "color": "#ff6900",
       "active": true,
       "selectors": {
@@ -20,41 +20,478 @@
       ]
     },
     {
-      "id": "adlibris",
-      "name": "Adlibris",
-      "domain": "adlibris.com",
-      "logo": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=100&h=100&fit=crop&crop=center",
-      "category": "Böcker",
-      "color": "#e31e24",
+      "id": "boozt",
+      "name": "Boozt",
+      "domain": "boozt.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Mode & Skönhet",
+      "color": "#000000",
       "active": true,
       "selectors": {
-        "coupon_input": "input[name*='coupon'], input[id*='coupon'], #coupon-code",
-        "apply_button": ".apply-coupon, button:contains('Använd')",
+        "coupon_input": "input[name*='discount'], input[name*='coupon']",
+        "apply_button": ".apply-discount, button[type='submit']",
         "cart_button": ".add-to-cart",
-        "checkout_button": ".checkout-button"
+        "checkout_button": ".checkout"
       },
       "url_patterns": [
-        "https://adlibris.com/*",
-        "https://www.adlibris.com/*"
+        "https://boozt.com/*",
+        "https://www.boozt.com/*"
       ]
     },
     {
-      "id": "lyko",
-      "name": "Lyko",
-      "domain": "lyko.com",
-      "logo": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop&crop=center",
-      "category": "Skönhet",
-      "color": "#ff69b4",
+      "id": "nakd",
+      "name": "NA-KD",
+      "domain": "nakd.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Mode & Skönhet",
+      "color": "#000000",
       "active": true,
       "selectors": {
-        "coupon_input": "input[name*='coupon'], [name='couponCode'], input[class*='coupon']",
-        "apply_button": ".apply-coupon-btn, button[type='submit']",
-        "cart_button": ".add-to-cart-btn",
+        "coupon_input": "input[name*='promo'], input[id*='coupon']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-bag",
         "checkout_button": ".checkout-btn"
       },
       "url_patterns": [
-        "https://lyko.com/*",
-        "https://www.lyko.com/*"
+        "https://nakd.com/*",
+        "https://www.nakd.com/*"
+      ]
+    },
+    {
+      "id": "nelly",
+      "name": "Nelly",
+      "domain": "nelly.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Mode & Skönhet",
+      "color": "#ff1493",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='voucher'], input[name*='discount']",
+        "apply_button": ".voucher-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".go-to-checkout"
+      },
+      "url_patterns": [
+        "https://nelly.com/*",
+        "https://www.nelly.com/*"
+      ]
+    },
+    {
+      "id": "ellos",
+      "name": "Ellos",
+      "domain": "ellos.se",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Mode & Skönhet",
+      "color": "#e31e24",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='campaign'], input[name*='voucher']",
+        "apply_button": ".campaign-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://ellos.se/*",
+        "https://www.ellos.se/*"
+      ]
+    },
+    {
+      "id": "hm",
+      "name": "H&M",
+      "domain": "hm.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Mode & Skönhet",
+      "color": "#e50000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='voucher'], input[data-testid*='voucher']",
+        "apply_button": "[data-testid='voucher-apply'], button[type='submit']",
+        "cart_button": "[data-testid='add-to-bag']",
+        "checkout_button": "[data-testid='checkout']"
+      },
+      "url_patterns": [
+        "https://hm.com/*",
+        "https://www2.hm.com/*"
+      ]
+    },
+    {
+      "id": "ahlens",
+      "name": "Åhléns",
+      "domain": "ahlens.se",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Mode & Skönhet",
+      "color": "#c41230",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], input[name*='discount']",
+        "apply_button": ".apply-coupon, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://ahlens.se/*",
+        "https://www.ahlens.se/*"
+      ]
+    },
+    {
+      "id": "ginatricot",
+      "name": "Gina Tricot",
+      "domain": "ginatricot.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Mode & Skönhet",
+      "color": "#ff1493",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='voucher']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://ginatricot.com/*",
+        "https://www.ginatricot.com/*"
+      ]
+    },
+    {
+      "id": "kappahl",
+      "name": "KappAhl",
+      "domain": "kappahl.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Mode & Skönhet",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='discount'], input[name*='voucher']",
+        "apply_button": ".discount-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://kappahl.com/*",
+        "https://www.kappahl.com/*"
+      ]
+    },
+    {
+      "id": "lindex",
+      "name": "Lindex",
+      "domain": "lindex.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Mode & Skönhet",
+      "color": "#ff1493",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='discount']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://lindex.com/*",
+        "https://www.lindex.com/*"
+      ]
+    },
+    {
+      "id": "dressmann",
+      "name": "Dressmann",
+      "domain": "dressmann.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Mode & Skönhet",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], input[name*='discount']",
+        "apply_button": ".coupon-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://dressmann.com/*",
+        "https://www.dressmann.com/*"
+      ]
+    },
+    {
+      "id": "cubus",
+      "name": "Cubus",
+      "domain": "cubus.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Mode & Skönhet",
+      "color": "#000000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='voucher']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://cubus.com/*",
+        "https://www.cubus.com/*"
+      ]
+    },
+    {
+      "id": "bubbleroom",
+      "name": "Bubbleroom",
+      "domain": "bubbleroom.se",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Mode & Skönhet",
+      "color": "#ff1493",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='discount'], input[name*='voucher']",
+        "apply_button": ".discount-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://bubbleroom.se/*",
+        "https://www.bubbleroom.se/*"
+      ]
+    },
+    {
+      "id": "weekday",
+      "name": "Weekday",
+      "domain": "weekday.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Mode & Skönhet",
+      "color": "#000000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='discount']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://weekday.com/*",
+        "https://www.weekday.com/*"
+      ]
+    },
+    {
+      "id": "cos",
+      "name": "COS",
+      "domain": "cosstores.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Mode & Skönhet",
+      "color": "#000000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='voucher']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://cosstores.com/*",
+        "https://www.cosstores.com/*"
+      ]
+    },
+    {
+      "id": "monki",
+      "name": "Monki",
+      "domain": "monki.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Mode & Skönhet",
+      "color": "#ff1493",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='discount']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://monki.com/*",
+        "https://www.monki.com/*"
+      ]
+    },
+    {
+      "id": "arket",
+      "name": "Arket",
+      "domain": "arket.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Mode & Skönhet",
+      "color": "#000000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='voucher']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://arket.com/*",
+        "https://www.arket.com/*"
+      ]
+    },
+    {
+      "id": "acnestudios",
+      "name": "Acne Studios",
+      "domain": "acnestudios.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Mode & Skönhet",
+      "color": "#000000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='discount']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://acnestudios.com/*",
+        "https://www.acnestudios.com/*"
+      ]
+    },
+    {
+      "id": "stadium",
+      "name": "Stadium",
+      "domain": "stadium.se",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Sport",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], input[name*='discount']",
+        "apply_button": ".coupon-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://stadium.se/*",
+        "https://www.stadium.se/*"
+      ]
+    },
+    {
+      "id": "xxl",
+      "name": "XXL",
+      "domain": "xxl.se",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Sport",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='voucher'], input[name*='discount']",
+        "apply_button": ".voucher-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://xxl.se/*",
+        "https://www.xxl.se/*"
+      ]
+    },
+    {
+      "id": "jdsports",
+      "name": "JD Sports",
+      "domain": "jdsports.se",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Sport",
+      "color": "#000000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='voucher']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://jdsports.se/*",
+        "https://www.jdsports.se/*"
+      ]
+    },
+    {
+      "id": "nike",
+      "name": "Nike",
+      "domain": "nike.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Sport",
+      "color": "#000000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='discount']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://nike.com/*",
+        "https://www.nike.com/*"
+      ]
+    },
+    {
+      "id": "adidas",
+      "name": "Adidas",
+      "domain": "adidas.se",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Sport",
+      "color": "#000000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='voucher']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://adidas.se/*",
+        "https://www.adidas.se/*"
+      ]
+    },
+    {
+      "id": "footlocker",
+      "name": "Foot Locker",
+      "domain": "footlocker.se",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Sport",
+      "color": "#000000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='discount']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://footlocker.se/*",
+        "https://www.footlocker.se/*"
+      ]
+    },
+    {
+      "id": "newbalance",
+      "name": "New Balance",
+      "domain": "newbalance.se",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Sport",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='voucher']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://newbalance.se/*",
+        "https://www.newbalance.se/*"
+      ]
+    },
+    {
+      "id": "converse",
+      "name": "Converse",
+      "domain": "converse.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Sport",
+      "color": "#000000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='discount']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://converse.com/*",
+        "https://www.converse.com/*"
       ]
     },
     {
@@ -74,6 +511,709 @@
       "url_patterns": [
         "https://cdon.se/*",
         "https://www.cdon.se/*"
+      ]
+    },
+    {
+      "id": "netonnet",
+      "name": "NetOnNet",
+      "domain": "netonnet.se",
+      "logo": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center",
+      "category": "Elektronik",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], input[name*='discount']",
+        "apply_button": ".coupon-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://netonnet.se/*",
+        "https://www.netonnet.se/*"
+      ]
+    },
+    {
+      "id": "webhallen",
+      "name": "Webhallen",
+      "domain": "webhallen.com",
+      "logo": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center",
+      "category": "Elektronik",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='voucher'], input[name*='discount']",
+        "apply_button": ".voucher-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://webhallen.com/*",
+        "https://www.webhallen.com/*"
+      ]
+    },
+    {
+      "id": "dustin",
+      "name": "Dustin",
+      "domain": "dustin.se",
+      "logo": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center",
+      "category": "Elektronik",
+      "color": "#003087",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], input[name*='promo']",
+        "apply_button": ".coupon-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://dustin.se/*",
+        "https://www.dustin.se/*"
+      ]
+    },
+    {
+      "id": "komplett",
+      "name": "Komplett",
+      "domain": "komplett.se",
+      "logo": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center",
+      "category": "Elektronik",
+      "color": "#003087",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='discount'], input[name*='voucher']",
+        "apply_button": ".discount-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://komplett.se/*",
+        "https://www.komplett.se/*"
+      ]
+    },
+    {
+      "id": "mediamarkt",
+      "name": "MediaMarkt",
+      "domain": "mediamarkt.se",
+      "logo": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center",
+      "category": "Elektronik",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], input[name*='discount']",
+        "apply_button": ".coupon-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://mediamarkt.se/*",
+        "https://www.mediamarkt.se/*"
+      ]
+    },
+    {
+      "id": "apple",
+      "name": "Apple Store",
+      "domain": "apple.com",
+      "logo": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center",
+      "category": "Elektronik",
+      "color": "#000000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='gift']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://apple.com/*",
+        "https://www.apple.com/*"
+      ]
+    },
+    {
+      "id": "samsung",
+      "name": "Samsung",
+      "domain": "samsung.com",
+      "logo": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center",
+      "category": "Elektronik",
+      "color": "#1428a0",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='discount']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://samsung.com/*",
+        "https://www.samsung.com/*"
+      ]
+    },
+    {
+      "id": "elgiganten",
+      "name": "Elgiganten",
+      "domain": "elgiganten.se",
+      "logo": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center",
+      "category": "Elektronik",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], input[name*='discount']",
+        "apply_button": ".coupon-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://elgiganten.se/*",
+        "https://www.elgiganten.se/*"
+      ]
+    },
+    {
+      "id": "teknikmagasinet",
+      "name": "Teknikmagasinet",
+      "domain": "teknikmagasinet.se",
+      "logo": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center",
+      "category": "Elektronik",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='voucher'], input[name*='discount']",
+        "apply_button": ".voucher-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://teknikmagasinet.se/*",
+        "https://www.teknikmagasinet.se/*"
+      ]
+    },
+    {
+      "id": "kjellcompany",
+      "name": "Kjell & Company",
+      "domain": "kjell.com",
+      "logo": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center",
+      "category": "Elektronik",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], input[name*='promo']",
+        "apply_button": ".coupon-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://kjell.com/*",
+        "https://www.kjell.com/*"
+      ]
+    },
+    {
+      "id": "inet",
+      "name": "Inet",
+      "domain": "inet.se",
+      "logo": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center",
+      "category": "Elektronik",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='discount'], input[name*='voucher']",
+        "apply_button": ".discount-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://inet.se/*",
+        "https://www.inet.se/*"
+      ]
+    },
+    {
+      "id": "adlibris",
+      "name": "Adlibris",
+      "domain": "adlibris.com",
+      "logo": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=100&h=100&fit=crop&crop=center",
+      "category": "Böcker & Media",
+      "color": "#e31e24",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], input[id*='coupon'], #coupon-code",
+        "apply_button": ".apply-coupon, button:contains('Använd')",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout-button"
+      },
+      "url_patterns": [
+        "https://adlibris.com/*",
+        "https://www.adlibris.com/*"
+      ]
+    },
+    {
+      "id": "bokus",
+      "name": "Bokus",
+      "domain": "bokus.com",
+      "logo": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=100&h=100&fit=crop&crop=center",
+      "category": "Böcker & Media",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='voucher'], input[name*='discount']",
+        "apply_button": ".voucher-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://bokus.com/*",
+        "https://www.bokus.com/*"
+      ]
+    },
+    {
+      "id": "akademibokhandeln",
+      "name": "Akademibokhandeln",
+      "domain": "akademibokhandeln.se",
+      "logo": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=100&h=100&fit=crop&crop=center",
+      "category": "Böcker & Media",
+      "color": "#003087",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], input[name*='discount']",
+        "apply_button": ".coupon-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://akademibokhandeln.se/*",
+        "https://www.akademibokhandeln.se/*"
+      ]
+    },
+    {
+      "id": "ikea",
+      "name": "IKEA",
+      "domain": "ikea.com",
+      "logo": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=100&h=100&fit=crop&crop=center",
+      "category": "Hem & Inredning",
+      "color": "#0051ba",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='gift']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://ikea.com/*",
+        "https://www.ikea.com/*"
+      ]
+    },
+    {
+      "id": "jotex",
+      "name": "Jotex",
+      "domain": "jotex.se",
+      "logo": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=100&h=100&fit=crop&crop=center",
+      "category": "Hem & Inredning",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='discount'], input[name*='voucher']",
+        "apply_button": ".discount-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://jotex.se/*",
+        "https://www.jotex.se/*"
+      ]
+    },
+    {
+      "id": "hemtex",
+      "name": "Hemtex",
+      "domain": "hemtex.se",
+      "logo": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=100&h=100&fit=crop&crop=center",
+      "category": "Hem & Inredning",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], input[name*='discount']",
+        "apply_button": ".coupon-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://hemtex.se/*",
+        "https://www.hemtex.se/*"
+      ]
+    },
+    {
+      "id": "royaldesign",
+      "name": "RoyalDesign",
+      "domain": "royaldesign.se",
+      "logo": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=100&h=100&fit=crop&crop=center",
+      "category": "Hem & Inredning",
+      "color": "#000000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='voucher']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://royaldesign.se/*",
+        "https://www.royaldesign.se/*"
+      ]
+    },
+    {
+      "id": "cervera",
+      "name": "Cervera",
+      "domain": "cervera.se",
+      "logo": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=100&h=100&fit=crop&crop=center",
+      "category": "Hem & Inredning",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='discount'], input[name*='coupon']",
+        "apply_button": ".discount-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://cervera.se/*",
+        "https://www.cervera.se/*"
+      ]
+    },
+    {
+      "id": "nordicnest",
+      "name": "Nordic Nest",
+      "domain": "nordicnest.se",
+      "logo": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=100&h=100&fit=crop&crop=center",
+      "category": "Hem & Inredning",
+      "color": "#000000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='voucher'], input[name*='promo']",
+        "apply_button": ".voucher-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://nordicnest.se/*",
+        "https://www.nordicnest.se/*"
+      ]
+    },
+    {
+      "id": "mio",
+      "name": "Mio",
+      "domain": "mio.se",
+      "logo": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=100&h=100&fit=crop&crop=center",
+      "category": "Hem & Inredning",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], input[name*='discount']",
+        "apply_button": ".coupon-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://mio.se/*",
+        "https://www.mio.se/*"
+      ]
+    },
+    {
+      "id": "lyko",
+      "name": "Lyko",
+      "domain": "lyko.com",
+      "logo": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop&crop=center",
+      "category": "Skönhet & Hälsa",
+      "color": "#ff69b4",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], [name='couponCode'], input[class*='coupon']",
+        "apply_button": ".apply-coupon-btn, button[type='submit']",
+        "cart_button": ".add-to-cart-btn",
+        "checkout_button": ".checkout-btn"
+      },
+      "url_patterns": [
+        "https://lyko.com/*",
+        "https://www.lyko.com/*"
+      ]
+    },
+    {
+      "id": "kicks",
+      "name": "KICKS",
+      "domain": "kicks.se",
+      "logo": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop&crop=center",
+      "category": "Skönhet & Hälsa",
+      "color": "#ff1493",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='voucher']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://kicks.se/*",
+        "https://www.kicks.se/*"
+      ]
+    },
+    {
+      "id": "apotea",
+      "name": "Apotea",
+      "domain": "apotea.se",
+      "logo": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop&crop=center",
+      "category": "Skönhet & Hälsa",
+      "color": "#00a651",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], input[name*='discount']",
+        "apply_button": ".coupon-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://apotea.se/*",
+        "https://www.apotea.se/*"
+      ]
+    },
+    {
+      "id": "apotekhjartat",
+      "name": "Apotek Hjärtat",
+      "domain": "apotekhjartat.se",
+      "logo": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop&crop=center",
+      "category": "Skönhet & Hälsa",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='voucher'], input[name*='discount']",
+        "apply_button": ".voucher-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://apotekhjartat.se/*",
+        "https://www.apotekhjartat.se/*"
+      ]
+    },
+    {
+      "id": "sephora",
+      "name": "Sephora",
+      "domain": "sephora.se",
+      "logo": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop&crop=center",
+      "category": "Skönhet & Hälsa",
+      "color": "#000000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='gift']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://sephora.se/*",
+        "https://www.sephora.se/*"
+      ]
+    },
+    {
+      "id": "nordicfeel",
+      "name": "NordicFeel",
+      "domain": "nordicfeel.se",
+      "logo": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop&crop=center",
+      "category": "Skönhet & Hälsa",
+      "color": "#ff1493",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='discount'], input[name*='voucher']",
+        "apply_button": ".discount-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://nordicfeel.se/*",
+        "https://www.nordicfeel.se/*"
+      ]
+    },
+    {
+      "id": "jollyroom",
+      "name": "Jollyroom",
+      "domain": "jollyroom.se",
+      "logo": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop&crop=center",
+      "category": "Barn & Leksaker",
+      "color": "#ff1493",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], input[name*='discount']",
+        "apply_button": ".coupon-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://jollyroom.se/*",
+        "https://www.jollyroom.se/*"
+      ]
+    },
+    {
+      "id": "lekia",
+      "name": "Lekia",
+      "domain": "lekia.se",
+      "logo": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop&crop=center",
+      "category": "Barn & Leksaker",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='voucher']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://lekia.se/*",
+        "https://www.lekia.se/*"
+      ]
+    },
+    {
+      "id": "babyshop",
+      "name": "Babyshop",
+      "domain": "babyshop.com",
+      "logo": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop&crop=center",
+      "category": "Barn & Leksaker",
+      "color": "#ff1493",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='discount'], input[name*='coupon']",
+        "apply_button": ".discount-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://babyshop.com/*",
+        "https://www.babyshop.com/*"
+      ]
+    },
+    {
+      "id": "mathem",
+      "name": "Mathem",
+      "domain": "mathem.se",
+      "logo": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop&crop=center",
+      "category": "Mat & Livsmedel",
+      "color": "#00a651",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='voucher']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://mathem.se/*",
+        "https://www.mathem.se/*"
+      ]
+    },
+    {
+      "id": "amazonse",
+      "name": "Amazon.se",
+      "domain": "amazon.se",
+      "logo": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop&crop=center",
+      "category": "Övrigt & Internationellt",
+      "color": "#ff9900",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], input[name*='gift']",
+        "apply_button": ".coupon-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://amazon.se/*",
+        "https://www.amazon.se/*"
+      ]
+    },
+    {
+      "id": "ebay",
+      "name": "eBay",
+      "domain": "ebay.com",
+      "logo": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop&crop=center",
+      "category": "Övrigt & Internationellt",
+      "color": "#0064d2",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], input[name*='promo']",
+        "apply_button": ".coupon-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://ebay.com/*",
+        "https://www.ebay.com/*"
+      ]
+    },
+    {
+      "id": "aliexpress",
+      "name": "AliExpress",
+      "domain": "aliexpress.com",
+      "logo": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop&crop=center",
+      "category": "Övrigt & Internationellt",
+      "color": "#ff4747",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='coupon'], input[name*='promo']",
+        "apply_button": ".coupon-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://aliexpress.com/*",
+        "https://www.aliexpress.com/*"
+      ]
+    },
+    {
+      "id": "asos",
+      "name": "ASOS",
+      "domain": "asos.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Övrigt & Internationellt",
+      "color": "#000000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='voucher']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://asos.com/*",
+        "https://www.asos.com/*"
+      ]
+    },
+    {
+      "id": "zara",
+      "name": "Zara",
+      "domain": "zara.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Övrigt & Internationellt",
+      "color": "#000000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='gift']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://zara.com/*",
+        "https://www.zara.com/*"
+      ]
+    },
+    {
+      "id": "uniqlo",
+      "name": "Uniqlo",
+      "domain": "uniqlo.com",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Övrigt & Internationellt",
+      "color": "#d40000",
+      "active": true,
+      "selectors": {
+        "coupon_input": "input[name*='promo'], input[name*='coupon']",
+        "apply_button": ".promo-apply, button[type='submit']",
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout"
+      },
+      "url_patterns": [
+        "https://uniqlo.com/*",
+        "https://www.uniqlo.com/*"
       ]
     },
     {
