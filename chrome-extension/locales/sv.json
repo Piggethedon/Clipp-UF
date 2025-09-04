@@ -1,0 +1,73 @@
+{
+  "extension_name": "Clipp",
+  "extension_description": "Spara pengar smartare – automatiskt",
+  "tagline": "Spara pengar smartare – automatiskt",
+  
+  "popup": {
+    "store_status": {
+      "not_supported": "Inget stöd för denna sida",
+      "not_supported_desc": "Besök en av våra stödda butiker för att börja spara",
+      "supported": "är redo att hjälpa dig spara pengar",
+      "scanning": "Söker efter rabattkoder...",
+      "found_coupons": "Rabattkoder hittade!",
+      "no_coupons": "Inga rabattkoder hittades för denna butik",
+      "error": "Fel vid sökning efter rabattkoder"
+    },
+    
+    "statistics": {
+      "title": "Din Clipp-statistik",
+      "purchases": "Köp via Clipp",
+      "total_saved": "Totalt sparat",
+      "currency": "SEK"
+    },
+    
+    "stores": {
+      "title": "Stödda butiker",
+      "visit_store": "Besök butik"
+    },
+    
+    "coupons": {
+      "apply_button": "Använd",
+      "applying": "Applicerar...",
+      "applied_success": "✅ Tillagd!",
+      "applied_failed": "❌ Fungerar inte",
+      "error": "❌ Fel"
+    },
+    
+    "footer": {
+      "privacy": "Integritet",
+      "support": "Support",
+      "terms": "Villkor"
+    }
+  },
+  
+  "content_script": {
+    "popup_title": "Clipp",
+    "scanning_message": "Söker efter rabattkoder...",
+    "found_message": "🎉 Rabattkoder hittade!",
+    "no_coupons_message": "Inga rabattkoder hittades för denna butik",
+    "error_message": "Fel vid sökning efter rabattkoder",
+    "notification_indicator": "!",
+    
+    "coupon_popup": {
+      "title": "Rabattkod hittad!",
+      "subtitle": "Clipp hittade en rabattkod för dig",
+      "apply_button": "Använd kod",
+      "dismiss_button": "Avfärda",
+      "close_button": "Stäng"
+    }
+  },
+  
+  "notifications": {
+    "coupon_found": "Rabattkod hittad på {store}!",
+    "coupon_applied": "Rabattkod tillagd! Du sparade {amount} {currency}",
+    "scan_complete": "Skanning klar för {store}"
+  },
+  
+  "errors": {
+    "network_error": "Nätverksfel - försök igen senare",
+    "store_not_supported": "Denna butik stöds inte ännu",
+    "coupon_apply_failed": "Kunde inte tillämpa rabattkoden",
+    "unknown_error": "Ett okänt fel inträffade"
+  }
+}
