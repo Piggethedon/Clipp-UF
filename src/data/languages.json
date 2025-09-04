@@ -1,0 +1,86 @@
+{
+  "sv": {
+    "hero": {
+      "title": "Spara pengar med",
+      "subtitle": "Clipp",
+      "description": "Den smartaste Chrome-extensionen som automatiskt hittar och applicerar rabattkoder för svenska butiker. Spara tid och pengar på varje köp.",
+      "cta": "Ladda ner extension",
+      "secondary_cta": "Se hur det fungerar"
+    },
+    "features": {
+      "title": "Varför välja Clipp?",
+      "auto_scan": {
+        "title": "Automatisk skanning",
+        "description": "Clipp söker igenom tusentals rabattkoder på sekunder"
+      },
+      "swedish_stores": {
+        "title": "Svenska butiker",
+        "description": "Specialanpassad för Zalando, Adlibris, Lyko, CDON och Tradera"
+      },
+      "easy_use": {
+        "title": "Enkelt att använda",
+        "description": "Installera och spara - ingen registrering krävs"
+      }
+    },
+    "stores": {
+      "title": "Stödda butiker",
+      "subtitle": "Vi arbetar med Sveriges mest populära webbutiker"
+    },
+    "demo": {
+      "title": "Så fungerar Clipp",
+      "step1": "Besök en stödd butik",
+      "step2": "Clipp hittar automatiskt rabattkoder",
+      "step3": "Spara pengar på ditt köp",
+      "popup_title": "Rabattkod hittad!",
+      "popup_code": "Spara 20% med kod: SAVE20",
+      "popup_button": "Använd kod"
+    },
+    "footer": {
+      "privacy": "Integritet",
+      "terms": "Villkor",
+      "support": "Support"
+    }
+  },
+  "en": {
+    "hero": {
+      "title": "Save money with",
+      "subtitle": "Clipp",
+      "description": "The smartest Chrome extension that automatically finds and applies discount codes for Swedish stores. Save time and money on every purchase.",
+      "cta": "Download Extension",
+      "secondary_cta": "See how it works"
+    },
+    "features": {
+      "title": "Why choose Clipp?",
+      "auto_scan": {
+        "title": "Automatic scanning",
+        "description": "Clipp searches through thousands of discount codes in seconds"
+      },
+      "swedish_stores": {
+        "title": "Swedish stores",
+        "description": "Specially adapted for Zalando, Adlibris, Lyko, CDON and Tradera"
+      },
+      "easy_use": {
+        "title": "Easy to use",
+        "description": "Install and save - no registration required"
+      }
+    },
+    "stores": {
+      "title": "Supported stores",
+      "subtitle": "We work with Sweden's most popular online stores"
+    },
+    "demo": {
+      "title": "How Clipp works",
+      "step1": "Visit a supported store",
+      "step2": "Clipp automatically finds discount codes",
+      "step3": "Save money on your purchase",
+      "popup_title": "Discount code found!",
+      "popup_code": "Save 20% with code: SAVE20",
+      "popup_button": "Apply code"
+    },
+    "footer": {
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "support": "Support"
+    }
+  }
+}

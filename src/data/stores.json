@@ -1,0 +1,96 @@
+{
+  "stores": [
+    {
+      "id": "zalando",
+      "name": "Zalando",
+      "domain": "zalando.se",
+      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
+      "category": "Fashion",
+      "color": "#ff6900",
+      "description": "Mode och skor online",
+      "active": true,
+      "selectors": {
+        "cart_button": "[data-testid='add-to-cart-button']",
+        "checkout_button": "[data-testid='checkout-button']",
+        "coupon_input": "[data-testid='coupon-input']"
+      }
+    },
+    {
+      "id": "adlibris",
+      "name": "Adlibris",
+      "domain": "adlibris.com",
+      "logo": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=100&h=100&fit=crop&crop=center",
+      "category": "Böcker",
+      "color": "#e31e24",
+      "description": "Böcker, ljudböcker och e-böcker",
+      "active": true,
+      "selectors": {
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".checkout-button",
+        "coupon_input": "#coupon-code"
+      }
+    },
+    {
+      "id": "lyko",
+      "name": "Lyko",
+      "domain": "lyko.com",
+      "logo": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop&crop=center",
+      "category": "Skönhet",
+      "color": "#ff69b4",
+      "description": "Skönhet och hårvård online",
+      "active": true,
+      "selectors": {
+        "cart_button": ".add-to-cart-btn",
+        "checkout_button": ".checkout-btn",
+        "coupon_input": "[name='couponCode']"
+      }
+    },
+    {
+      "id": "cdon",
+      "name": "CDON",
+      "domain": "cdon.se",
+      "logo": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center",
+      "category": "Elektronik",
+      "color": "#003087",
+      "description": "Elektronik, spel och media",
+      "active": true,
+      "selectors": {
+        "cart_button": ".add-to-cart",
+        "checkout_button": ".proceed-to-checkout",
+        "coupon_input": "#discount-code"
+      }
+    },
+    {
+      "id": "tradera",
+      "name": "Tradera",
+      "domain": "tradera.com",
+      "logo": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=100&h=100&fit=crop&crop=center",
+      "category": "Auktioner",
+      "color": "#0066cc",
+      "description": "Köp och sälj på auktion",
+      "active": true,
+      "selectors": {
+        "cart_button": ".bid-button",
+        "checkout_button": ".buy-now",
+        "coupon_input": ".promo-code-input"
+      }
+    }
+  ],
+  "coupon_sources": [
+    {
+      "name": "Rabattkod.se",
+      "url": "https://rabattkod.se",
+      "priority": 1
+    },
+    {
+      "name": "Kupongkod.com",
+      "url": "https://kupongkod.com", 
+      "priority": 2
+    },
+    {
+      "name": "Retailmenot.com",
+      "url": "https://retailmenot.com",
+      "priority": 3
+    }
+  ]
+}
