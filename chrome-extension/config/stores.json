@@ -4,6 +4,8 @@
       "id": "zalando",
       "name": "Zalando",
       "domain": "zalando.se",
+      "url": "https://www.zalando.se",
+      "affiliateUrl": "https://www.zalando.se",
       "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
       "category": "Mode & Skönhet",
       "color": "#ff6900",
@@ -20,9 +22,32 @@
       ]
     },
     {
+      "id": "apotea",
+      "name": "Apotea",
+      "domain": "apotea.se",
+      "url": "https://www.apotea.se",
+      "affiliateUrl": "https://www.apotea.se",
+      "logo": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop&crop=center",
+      "category": "Hälsa & Skönhet",
+      "color": "#00a651",
+      "active": true,
+      "selectors": {
+        "coupon_input": "[name='couponCode']",
+        "apply_button": ".coupon-apply",
+        "cart_button": ".add-to-cart-btn",
+        "checkout_button": ".checkout-btn"
+      },
+      "url_patterns": [
+        "https://apotea.se/*",
+        "https://www.apotea.se/*"
+      ]
+    },
+    {
       "id": "boozt",
       "name": "Boozt",
       "domain": "boozt.com",
+      "url": "https://www.boozt.com",
+      "affiliateUrl": "https://www.boozt.com",
       "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
       "category": "Mode & Skönhet",
       "color": "#000000",
@@ -39,66 +64,32 @@
       ]
     },
     {
-      "id": "nakd",
-      "name": "NA-KD",
-      "domain": "nakd.com",
-      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
-      "category": "Mode & Skönhet",
-      "color": "#000000",
+      "id": "cdon",
+      "name": "CDON",
+      "domain": "cdon.se",
+      "url": "https://www.cdon.se",
+      "affiliateUrl": "https://www.cdon.se",
+      "logo": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center",
+      "category": "Elektronik",
+      "color": "#003087",
       "active": true,
       "selectors": {
-        "coupon_input": "input[name*='promo'], input[id*='coupon']",
-        "apply_button": ".promo-apply, button[type='submit']",
-        "cart_button": ".add-to-bag",
-        "checkout_button": ".checkout-btn"
-      },
-      "url_patterns": [
-        "https://nakd.com/*",
-        "https://www.nakd.com/*"
-      ]
-    },
-    {
-      "id": "nelly",
-      "name": "Nelly",
-      "domain": "nelly.com",
-      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
-      "category": "Mode & Skönhet",
-      "color": "#ff1493",
-      "active": true,
-      "selectors": {
-        "coupon_input": "input[name*='voucher'], input[name*='discount']",
-        "apply_button": ".voucher-apply, button[type='submit']",
-        "cart_button": ".add-to-cart",
-        "checkout_button": ".go-to-checkout"
-      },
-      "url_patterns": [
-        "https://nelly.com/*",
-        "https://www.nelly.com/*"
-      ]
-    },
-    {
-      "id": "ellos",
-      "name": "Ellos",
-      "domain": "ellos.se",
-      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
-      "category": "Mode & Skönhet",
-      "color": "#e31e24",
-      "active": true,
-      "selectors": {
-        "coupon_input": "input[name*='campaign'], input[name*='voucher']",
-        "apply_button": ".campaign-apply, button[type='submit']",
+        "coupon_input": "input[name*='discount'], input[name*='voucher']",
+        "apply_button": ".discount-apply, button[type='submit']",
         "cart_button": ".add-to-cart",
         "checkout_button": ".checkout"
       },
       "url_patterns": [
-        "https://ellos.se/*",
-        "https://www.ellos.se/*"
+        "https://cdon.se/*",
+        "https://www.cdon.se/*"
       ]
     },
     {
       "id": "hm",
       "name": "H&M",
       "domain": "hm.com",
+      "url": "https://www2.hm.com/sv_se/index.html",
+      "affiliateUrl": "https://www2.hm.com/sv_se/index.html",
       "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
       "category": "Mode & Skönhet",
       "color": "#e50000",
@@ -115,237 +106,11 @@
       ]
     },
     {
-      "id": "ahlens",
-      "name": "Åhléns",
-      "domain": "ahlens.se",
-      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
-      "category": "Mode & Skönhet",
-      "color": "#c41230",
-      "active": true,
-      "selectors": {
-        "coupon_input": "input[name*='coupon'], input[name*='discount']",
-        "apply_button": ".apply-coupon, button[type='submit']",
-        "cart_button": ".add-to-cart",
-        "checkout_button": ".checkout"
-      },
-      "url_patterns": [
-        "https://ahlens.se/*",
-        "https://www.ahlens.se/*"
-      ]
-    },
-    {
-      "id": "ginatricot",
-      "name": "Gina Tricot",
-      "domain": "ginatricot.com",
-      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
-      "category": "Mode & Skönhet",
-      "color": "#ff1493",
-      "active": true,
-      "selectors": {
-        "coupon_input": "input[name*='promo'], input[name*='voucher']",
-        "apply_button": ".promo-apply, button[type='submit']",
-        "cart_button": ".add-to-cart",
-        "checkout_button": ".checkout"
-      },
-      "url_patterns": [
-        "https://ginatricot.com/*",
-        "https://www.ginatricot.com/*"
-      ]
-    },
-    {
-      "id": "kappahl",
-      "name": "KappAhl",
-      "domain": "kappahl.com",
-      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
-      "category": "Mode & Skönhet",
-      "color": "#d40000",
-      "active": true,
-      "selectors": {
-        "coupon_input": "input[name*='discount'], input[name*='voucher']",
-        "apply_button": ".discount-apply, button[type='submit']",
-        "cart_button": ".add-to-cart",
-        "checkout_button": ".checkout"
-      },
-      "url_patterns": [
-        "https://kappahl.com/*",
-        "https://www.kappahl.com/*"
-      ]
-    },
-    {
-      "id": "lindex",
-      "name": "Lindex",
-      "domain": "lindex.com",
-      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
-      "category": "Mode & Skönhet",
-      "color": "#ff1493",
-      "active": true,
-      "selectors": {
-        "coupon_input": "input[name*='promo'], input[name*='discount']",
-        "apply_button": ".promo-apply, button[type='submit']",
-        "cart_button": ".add-to-cart",
-        "checkout_button": ".checkout"
-      },
-      "url_patterns": [
-        "https://lindex.com/*",
-        "https://www.lindex.com/*"
-      ]
-    },
-    {
-      "id": "dressmann",
-      "name": "Dressmann",
-      "domain": "dressmann.com",
-      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
-      "category": "Mode & Skönhet",
-      "color": "#d40000",
-      "active": true,
-      "selectors": {
-        "coupon_input": "input[name*='coupon'], input[name*='discount']",
-        "apply_button": ".coupon-apply, button[type='submit']",
-        "cart_button": ".add-to-cart",
-        "checkout_button": ".checkout"
-      },
-      "url_patterns": [
-        "https://dressmann.com/*",
-        "https://www.dressmann.com/*"
-      ]
-    },
-    {
-      "id": "cubus",
-      "name": "Cubus",
-      "domain": "cubus.com",
-      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
-      "category": "Mode & Skönhet",
-      "color": "#000000",
-      "active": true,
-      "selectors": {
-        "coupon_input": "input[name*='promo'], input[name*='voucher']",
-        "apply_button": ".promo-apply, button[type='submit']",
-        "cart_button": ".add-to-cart",
-        "checkout_button": ".checkout"
-      },
-      "url_patterns": [
-        "https://cubus.com/*",
-        "https://www.cubus.com/*"
-      ]
-    },
-    {
-      "id": "bubbleroom",
-      "name": "Bubbleroom",
-      "domain": "bubbleroom.se",
-      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
-      "category": "Mode & Skönhet",
-      "color": "#ff1493",
-      "active": true,
-      "selectors": {
-        "coupon_input": "input[name*='discount'], input[name*='voucher']",
-        "apply_button": ".discount-apply, button[type='submit']",
-        "cart_button": ".add-to-cart",
-        "checkout_button": ".checkout"
-      },
-      "url_patterns": [
-        "https://bubbleroom.se/*",
-        "https://www.bubbleroom.se/*"
-      ]
-    },
-    {
-      "id": "weekday",
-      "name": "Weekday",
-      "domain": "weekday.com",
-      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
-      "category": "Mode & Skönhet",
-      "color": "#000000",
-      "active": true,
-      "selectors": {
-        "coupon_input": "input[name*='promo'], input[name*='discount']",
-        "apply_button": ".promo-apply, button[type='submit']",
-        "cart_button": ".add-to-cart",
-        "checkout_button": ".checkout"
-      },
-      "url_patterns": [
-        "https://weekday.com/*",
-        "https://www.weekday.com/*"
-      ]
-    },
-    {
-      "id": "cos",
-      "name": "COS",
-      "domain": "cosstores.com",
-      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
-      "category": "Mode & Skönhet",
-      "color": "#000000",
-      "active": true,
-      "selectors": {
-        "coupon_input": "input[name*='promo'], input[name*='voucher']",
-        "apply_button": ".promo-apply, button[type='submit']",
-        "cart_button": ".add-to-cart",
-        "checkout_button": ".checkout"
-      },
-      "url_patterns": [
-        "https://cosstores.com/*",
-        "https://www.cosstores.com/*"
-      ]
-    },
-    {
-      "id": "monki",
-      "name": "Monki",
-      "domain": "monki.com",
-      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
-      "category": "Mode & Skönhet",
-      "color": "#ff1493",
-      "active": true,
-      "selectors": {
-        "coupon_input": "input[name*='promo'], input[name*='discount']",
-        "apply_button": ".promo-apply, button[type='submit']",
-        "cart_button": ".add-to-cart",
-        "checkout_button": ".checkout"
-      },
-      "url_patterns": [
-        "https://monki.com/*",
-        "https://www.monki.com/*"
-      ]
-    },
-    {
-      "id": "arket",
-      "name": "Arket",
-      "domain": "arket.com",
-      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
-      "category": "Mode & Skönhet",
-      "color": "#000000",
-      "active": true,
-      "selectors": {
-        "coupon_input": "input[name*='promo'], input[name*='voucher']",
-        "apply_button": ".promo-apply, button[type='submit']",
-        "cart_button": ".add-to-cart",
-        "checkout_button": ".checkout"
-      },
-      "url_patterns": [
-        "https://arket.com/*",
-        "https://www.arket.com/*"
-      ]
-    },
-    {
-      "id": "acnestudios",
-      "name": "Acne Studios",
-      "domain": "acnestudios.com",
-      "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
-      "category": "Mode & Skönhet",
-      "color": "#000000",
-      "active": true,
-      "selectors": {
-        "coupon_input": "input[name*='promo'], input[name*='discount']",
-        "apply_button": ".promo-apply, button[type='submit']",
-        "cart_button": ".add-to-cart",
-        "checkout_button": ".checkout"
-      },
-      "url_patterns": [
-        "https://acnestudios.com/*",
-        "https://www.acnestudios.com/*"
-      ]
-    },
-    {
       "id": "stadium",
       "name": "Stadium",
       "domain": "stadium.se",
+      "url": "https://www.stadium.se",
+      "affiliateUrl": "https://www.stadium.se",
       "logo": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop&crop=center",
       "category": "Sport",
       "color": "#d40000",
@@ -360,7 +125,8 @@
         "https://stadium.se/*",
         "https://www.stadium.se/*"
       ]
-    },
+    }
+  ],
     {
       "id": "xxl",
       "name": "XXL",

@@ -27,12 +27,15 @@
     },
     
     "coupons": {
-      "apply_button": "Apply",
-      "applying": "Applying...",
-      "applied_success": "✅ Applied!",
-      "applied_failed": "❌ Doesn't work",
-      "error": "❌ Error"
+      "found": "Coupon codes found",
+      "testing": "Testing codes...",
+      "none_found": "No codes found",
+      "no_coupons_message": "No coupons found for this store, but you can still shop via Clipp.",
+      "apply": "Apply",
+      "applied": "Applied!",
+      "failed": "Doesn't work"
     },
+    "store_button": "Go to {store}",
     
     "footer": {
       "privacy": "Privacy",

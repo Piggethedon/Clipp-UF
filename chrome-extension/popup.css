@@ -231,6 +231,43 @@ body {
     color: #6b7280;
 }
 
+/* Store Button Section */
+.clipp-store-section {
+    padding: 0 20px 20px 20px;
+}
+
+.clipp-store-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.clipp-store-btn:hover {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.clipp-store-btn:active {
+    transform: translateY(0);
+}
+
+.clipp-store-icon {
+    font-size: 18px;
+}
+
 /* Statistics */
 .clipp-stats-section {
     padding: 20px;

@@ -27,12 +27,15 @@
     },
     
     "coupons": {
-      "apply_button": "Använd",
-      "applying": "Applicerar...",
-      "applied_success": "✅ Tillagd!",
-      "applied_failed": "❌ Fungerar inte",
-      "error": "❌ Fel"
+      "found": "Rabattkoder funna",
+      "testing": "Testar koder...",
+      "none_found": "Inga koder hittades",
+      "no_coupons_message": "Inga kuponger hittades för denna butik, men du kan ändå handla via Clipp.",
+      "apply": "Använd",
+      "applied": "Tillagd!",
+      "failed": "Fungerar inte"
     },
+    "store_button": "Gå till {store}",
     
     "footer": {
       "privacy": "Integritet",
