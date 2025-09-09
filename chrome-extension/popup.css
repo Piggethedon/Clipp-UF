@@ -1,4 +1,4 @@
-/* Clipp Popup Styles */
+/* Clipp Enhanced Popup Styles */
 * {
     margin: 0;
     padding: 0;
@@ -8,13 +8,15 @@
 body {
     width: 380px;
     min-height: 500px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
     background: linear-gradient(135deg, #f8faff 0%, #f1f5ff 100%);
     color: #1f2937;
+    line-height: 1.4;
 }
 
 .clipp-popup-container {
     padding: 0;
+    overflow: hidden;
 }
 
 /* Header */
@@ -25,147 +27,169 @@ body {
     padding: 20px 20px 16px;
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     color: white;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 .clipp-logo-container {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .clipp-popup-logo {
     width: 28px;
     height: 28px;
     filter: brightness(0) invert(1);
+    border-radius: 6px;
 }
 
 .clipp-popup-header h1 {
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
 .clipp-language-switcher {
     display: flex;
-    gap: 4px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 4px;
-    border-radius: 8px;
+    gap: 2px;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 3px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
 }
 
 .clipp-lang-btn {
     background: none;
     border: none;
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: 6px 10px;
+    border-radius: 7px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
 }
 
 .clipp-lang-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
 }
 
 .clipp-lang-btn.active {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.clipp-lang-btn img {
+    border-radius: 2px;
 }
 
 /* Tagline */
 .clipp-tagline {
     text-align: center;
-    padding: 12px 20px;
+    padding: 14px 20px;
     background: linear-gradient(135deg, #e0f2fe, #e1f5fe);
     font-size: 14px;
     color: #0369a1;
     font-weight: 500;
+    border-bottom: 1px solid rgba(3, 105, 161, 0.1);
 }
 
-/* Section 1: Pågående kodtestning */
-.clipp-testing-section {
+/* Sections */
+.clipp-testing-section,
+.clipp-deals-section,
+.clipp-stats-section {
     padding: 20px;
     border-bottom: 1px solid #e5e7eb;
 }
 
-.clipp-testing-section h3 {
+.clipp-testing-section h3,
+.clipp-deals-section h3,
+.clipp-stats-section h3 {
     font-size: 16px;
     margin-bottom: 12px;
     color: #374151;
+    font-weight: 600;
 }
 
-.clipp-testing-content {
+/* Content containers */
+.clipp-testing-content,
+.clipp-deals-content {
     background: white;
     border-radius: 12px;
     border: 1px solid #e5e7eb;
     padding: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
 }
 
+.clipp-testing-content:hover,
+.clipp-deals-content:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Testing states */
 .clipp-testing-idle,
 .clipp-testing-active,
 .clipp-testing-result {
     display: flex;
     align-items: center;
     gap: 12px;
+    min-height: 40px;
 }
 
 .clipp-testing-icon,
 .clipp-result-icon {
     font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: #f3f4f6;
 }
 
 .clipp-testing-spinner {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
-}
-
-.clipp-testing-info p,
-.clipp-result-info p {
-    font-size: 12px;
-    color: #6b7280;
-    margin-top: 2px;
+    width: 40px;
+    height: 40px;
+    background: #f3f4f6;
+    border-radius: 8px;
 }
 
 .clipp-testing-info h4,
 .clipp-result-info h4 {
     font-size: 14px;
     color: #374151;
+    margin: 0 0 2px 0;
+    font-weight: 600;
+}
+
+.clipp-testing-info p,
+.clipp-result-info p {
+    font-size: 12px;
+    color: #6b7280;
     margin: 0;
 }
 
 .clipp-testing-result.success .clipp-result-icon {
-    color: #10b981;
+    background: #dcfce7;
+    color: #15803d;
 }
 
 .clipp-testing-result.failure .clipp-result-icon {
-    color: #ef4444;
+    background: #fef2f2;
+    color: #dc2626;
 }
 
-/* Section 2: Aktiva deals */
-.clipp-deals-section {
-    padding: 20px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.clipp-deals-section h3 {
-    font-size: 16px;
-    margin-bottom: 12px;
-    color: #374151;
-}
-
-.clipp-deals-content {
-    background: white;
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    padding: 16px;
-}
-
+/* Loading state */
 .clipp-deals-loading {
     display: flex;
     align-items: center;
     gap: 12px;
     justify-content: center;
-    padding: 20px 0;
+    padding: 24px 0;
 }
 
 .clipp-deals-loading p {
@@ -173,62 +197,133 @@ body {
     color: #6b7280;
 }
 
+/* Deals list */
 .clipp-deals-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
 
 .clipp-deal-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px;
+    padding: 14px;
     background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid #0ea5e9;
+    transition: all 0.2s ease;
+}
+
+.clipp-deal-item:hover {
+    background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+}
+
+.clipp-deal-info {
+    flex: 1;
+    margin-right: 12px;
+}
+
+.clipp-deal-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
 }
 
 .clipp-deal-info h4 {
     font-size: 14px;
     color: #0369a1;
-    margin: 0 0 2px 0;
+    margin: 0;
+    font-weight: 700;
+    font-family: 'Monaco', 'Menlo', monospace;
+    background: rgba(3, 105, 161, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.clipp-verified-badge {
+    background: #10b981;
+    color: white;
+    font-size: 10px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-weight: 600;
 }
 
 .clipp-deal-info p {
     font-size: 12px;
     color: #0284c7;
     margin: 0;
+    line-height: 1.3;
+}
+
+.clipp-coupon-source {
+    font-size: 10px;
+    color: #6b7280;
+    font-style: italic;
+    margin-top: 2px;
+    display: block;
 }
 
 .clipp-deal-apply {
-    background: #3b82f6;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
     color: white;
     border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
     font-size: 12px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s ease;
+    min-width: 70px;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
 }
 
-.clipp-deal-apply:hover {
-    background: #2563eb;
+.clipp-deal-apply:hover:not(:disabled) {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
 }
 
+.clipp-deal-apply:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.clipp-deal-apply.clipp-applying {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    animation: pulse 1.5s infinite;
+}
+
+.clipp-deal-apply.clipp-applied {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.clipp-deal-apply.clipp-failed {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+/* Empty state */
 .clipp-deals-empty {
     text-align: center;
-    padding: 20px 0;
+    padding: 24px 0;
 }
 
 .clipp-empty-icon {
-    font-size: 24px;
-    margin-bottom: 8px;
+    font-size: 32px;
+    margin-bottom: 12px;
+    opacity: 0.6;
 }
 
 .clipp-deals-empty p {
-    font-size: 14px;
+    font-size: 13px;
     color: #6b7280;
+    line-height: 1.4;
+    max-width: 280px;
+    margin: 0 auto;
 }
 
 /* Store Button Section */
@@ -241,23 +336,24 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 14px 20px;
+    gap: 10px;
+    padding: 16px 20px;
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     color: white;
     border: none;
     border-radius: 12px;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    text-decoration: none;
 }
 
 .clipp-store-btn:hover {
     background: linear-gradient(135deg, #2563eb, #1e40af);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
 }
 
 .clipp-store-btn:active {
@@ -265,39 +361,43 @@ body {
 }
 
 .clipp-store-icon {
-    font-size: 18px;
+    font-size: 20px;
 }
 
 /* Statistics */
-.clipp-stats-section {
-    padding: 20px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.clipp-stats-section h3 {
-    font-size: 16px;
-    margin-bottom: 12px;
-    color: #374151;
-}
-
 .clipp-stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
+    margin-bottom: 16px;
 }
 
 .clipp-stat-card {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px;
+    gap: 10px;
+    padding: 14px;
     background: white;
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.clipp-stat-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
 }
 
 .clipp-stat-icon {
-    font-size: 20px;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: #f3f4f6;
 }
 
 .clipp-stat-content {
@@ -307,13 +407,17 @@ body {
 .clipp-stat-label {
     font-size: 11px;
     color: #6b7280;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
 }
 
 .clipp-stat-value {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 700;
     color: #059669;
+    line-height: 1;
 }
 
 /* Manual Purchase Button */
@@ -328,19 +432,21 @@ body {
     justify-content: center;
     gap: 8px;
     padding: 12px;
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
     color: white;
     border: none;
     border-radius: 8px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
 }
 
 .clipp-manual-btn:hover {
-    background: linear-gradient(135deg, #2563eb, #1e40af);
+    background: linear-gradient(135deg, #4f46e5, #4338ca);
     transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
 /* Spinner Animation */
@@ -356,6 +462,11 @@ body {
 @keyframes clipp-spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
 }
 
 /* Footer */
@@ -378,6 +489,8 @@ body {
 .clipp-footer-links a {
     color: #6b7280;
     text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
 }
 
 .clipp-footer-links a:hover {
@@ -389,16 +502,62 @@ body {
 }
 
 .clipp-version {
-    font-size: 12px;
+    font-size: 11px;
     color: #9ca3af;
+    font-weight: 500;
 }
 
-/* Animations */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
+/* Smooth transitions and animations */
 .clipp-popup-container {
-    animation: fadeIn 0.3s ease;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(10px);
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 400px) {
+    body {
+        width: 340px;
+    }
+    
+    .clipp-popup-header {
+        padding: 16px;
+    }
+    
+    .clipp-testing-section,
+    .clipp-deals-section,
+    .clipp-stats-section,
+    .clipp-store-section {
+        padding: 16px;
+    }
+}
+
+/* Dark mode support (if needed in future) */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: linear-gradient(135deg, #1f2937, #111827);
+        color: #f9fafb;
+    }
+    
+    .clipp-testing-content,
+    .clipp-deals-content,
+    .clipp-stat-card {
+        background: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+    }
+    
+    .clipp-popup-footer {
+        background: #374151;
+        border-color: #4b5563;
+    }
 }
