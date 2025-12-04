@@ -1,22 +1,62 @@
-/* Clipp Enhanced Popup Styles */
+/* Clipp Popup - Clean White/Blue/Black Design */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+:root {
+    --clipp-white: #ffffff;
+    --clipp-blue-50: #eff6ff;
+    --clipp-blue-100: #dbeafe;
+    --clipp-blue-200: #bfdbfe;
+    --clipp-blue-500: #3b82f6;
+    --clipp-blue-600: #2563eb;
+    --clipp-blue-700: #1d4ed8;
+    --clipp-black: #0f172a;
+    --clipp-gray-50: #f8fafc;
+    --clipp-gray-100: #f1f5f9;
+    --clipp-gray-200: #e2e8f0;
+    --clipp-gray-300: #cbd5e1;
+    --clipp-gray-400: #94a3b8;
+    --clipp-gray-500: #64748b;
+    --clipp-gray-600: #475569;
+    --clipp-gray-700: #334155;
+    --clipp-green-500: #22c55e;
+    --clipp-green-600: #16a34a;
+    --clipp-red-500: #ef4444;
+    --clipp-orange-500: #f97316;
+    --clipp-purple-500: #a855f7;
+    
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --shadow-blue: 0 4px 14px -3px rgba(59, 130, 246, 0.4);
+}
+
 body {
     width: 380px;
-    min-height: 500px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
-    background: linear-gradient(135deg, #f8faff 0%, #f1f5ff 100%);
-    color: #1f2937;
-    line-height: 1.4;
+    min-height: 520px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+    background: var(--clipp-white);
+    color: var(--clipp-black);
+    line-height: 1.5;
 }
 
 .clipp-popup-container {
-    padding: 0;
     overflow: hidden;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Header */
@@ -24,45 +64,44 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 20px 16px;
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    color: white;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+    padding: 20px 24px;
+    background: linear-gradient(135deg, var(--clipp-blue-600), var(--clipp-blue-700));
+    color: var(--clipp-white);
 }
 
 .clipp-logo-container {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
 .clipp-popup-logo {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     filter: brightness(0) invert(1);
-    border-radius: 6px;
+    border-radius: 8px;
 }
 
 .clipp-popup-header h1 {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 700;
     letter-spacing: -0.5px;
 }
 
 .clipp-language-switcher {
     display: flex;
-    gap: 2px;
+    gap: 4px;
     background: rgba(255, 255, 255, 0.15);
-    padding: 3px;
+    padding: 4px;
     border-radius: 10px;
     backdrop-filter: blur(10px);
 }
 
 .clipp-lang-btn {
-    background: none;
+    background: transparent;
     border: none;
-    padding: 6px 10px;
-    border-radius: 7px;
+    padding: 8px 12px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -70,12 +109,12 @@ body {
 }
 
 .clipp-lang-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .clipp-lang-btn.active {
-    background: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: var(--clipp-white);
+    box-shadow: var(--shadow-sm);
 }
 
 .clipp-lang-btn img {
@@ -85,319 +124,436 @@ body {
 /* Tagline */
 .clipp-tagline {
     text-align: center;
-    padding: 14px 20px;
-    background: linear-gradient(135deg, #e0f2fe, #e1f5fe);
+    padding: 12px 24px;
+    background: var(--clipp-blue-50);
     font-size: 14px;
-    color: #0369a1;
+    color: var(--clipp-blue-700);
     font-weight: 500;
-    border-bottom: 1px solid rgba(3, 105, 161, 0.1);
+    border-bottom: 1px solid var(--clipp-blue-100);
+}
+
+/* Store Status Badge */
+.clipp-store-status {
+    padding: 16px 24px;
+    background: var(--clipp-white);
+    border-bottom: 1px solid var(--clipp-gray-200);
+}
+
+.clipp-store-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--clipp-gray-50);
+    border-radius: 12px;
+    border: 1px solid var(--clipp-gray-200);
+}
+
+.clipp-store-badge.active {
+    background: linear-gradient(135deg, var(--clipp-blue-50), var(--clipp-white));
+    border-color: var(--clipp-blue-200);
+}
+
+.clipp-store-icon {
+    font-size: 24px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--clipp-white);
+    border-radius: 10px;
+    box-shadow: var(--shadow-sm);
+}
+
+.clipp-store-info h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--clipp-black);
+    margin-bottom: 2px;
+}
+
+.clipp-store-info p {
+    font-size: 12px;
+    color: var(--clipp-gray-500);
 }
 
 /* Sections */
-.clipp-testing-section,
-.clipp-deals-section,
-.clipp-stats-section {
-    padding: 20px;
-    border-bottom: 1px solid #e5e7eb;
+.clipp-section {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--clipp-gray-100);
 }
 
-.clipp-testing-section h3,
-.clipp-deals-section h3,
-.clipp-stats-section h3 {
-    font-size: 16px;
-    margin-bottom: 12px;
-    color: #374151;
+.clipp-section:last-of-type {
+    border-bottom: none;
+}
+
+.clipp-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.clipp-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--clipp-gray-700);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.clipp-section-badge {
+    font-size: 11px;
+    padding: 4px 10px;
+    background: var(--clipp-blue-100);
+    color: var(--clipp-blue-700);
+    border-radius: 20px;
     font-weight: 600;
 }
 
-/* Content containers */
-.clipp-testing-content,
-.clipp-deals-content {
-    background: white;
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    padding: 16px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+/* Add Code Section */
+.clipp-add-code-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.clipp-input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.clipp-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid var(--clipp-gray-200);
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--clipp-black);
+    background: var(--clipp-white);
     transition: all 0.2s ease;
 }
 
-.clipp-testing-content:hover,
-.clipp-deals-content:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+.clipp-input:focus {
+    outline: none;
+    border-color: var(--clipp-blue-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* Testing states */
-.clipp-testing-idle,
-.clipp-testing-active,
-.clipp-testing-result {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-height: 40px;
+.clipp-input::placeholder {
+    color: var(--clipp-gray-400);
 }
 
-.clipp-testing-icon,
-.clipp-result-icon {
-    font-size: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    background: #f3f4f6;
-}
-
-.clipp-testing-spinner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: #f3f4f6;
-    border-radius: 8px;
-}
-
-.clipp-testing-info h4,
-.clipp-result-info h4 {
-    font-size: 14px;
-    color: #374151;
-    margin: 0 0 2px 0;
+.clipp-input.code-input {
+    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     font-weight: 600;
 }
 
-.clipp-testing-info p,
-.clipp-result-info p {
-    font-size: 12px;
-    color: #6b7280;
-    margin: 0;
-}
-
-.clipp-testing-result.success .clipp-result-icon {
-    background: #dcfce7;
-    color: #15803d;
-}
-
-.clipp-testing-result.failure .clipp-result-icon {
-    background: #fef2f2;
-    color: #dc2626;
-}
-
-/* Loading state */
-.clipp-deals-loading {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    justify-content: center;
-    padding: 24px 0;
-}
-
-.clipp-deals-loading p {
+.clipp-add-btn {
+    padding: 12px 20px;
+    background: linear-gradient(135deg, var(--clipp-blue-500), var(--clipp-blue-600));
+    color: var(--clipp-white);
+    border: none;
+    border-radius: 10px;
     font-size: 14px;
-    color: #6b7280;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-blue);
+    white-space: nowrap;
 }
 
-/* Deals list */
-.clipp-deals-list {
+.clipp-add-btn:hover {
+    background: linear-gradient(135deg, var(--clipp-blue-600), var(--clipp-blue-700));
+    transform: translateY(-1px);
+}
+
+.clipp-add-btn:active {
+    transform: translateY(0);
+}
+
+.clipp-add-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Coupons List */
+.clipp-coupons-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.clipp-deal-item {
+.clipp-coupon-item {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 14px;
-    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-    border-radius: 10px;
-    border: 1px solid #0ea5e9;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: var(--clipp-white);
+    border: 1px solid var(--clipp-gray-200);
+    border-radius: 12px;
     transition: all 0.2s ease;
+    animation: fadeIn 0.3s ease-out;
 }
 
-.clipp-deal-item:hover {
-    background: linear-gradient(135deg, #e0f2fe, #bae6fd);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.clipp-deal-info {
+.clipp-coupon-item:hover {
+    border-color: var(--clipp-blue-200);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.clipp-coupon-item.user-added {
+    border-left: 3px solid var(--clipp-purple-500);
+}
+
+.clipp-coupon-item.reddit {
+    border-left: 3px solid var(--clipp-orange-500);
+}
+
+.clipp-coupon-item.verified {
+    border-left: 3px solid var(--clipp-green-500);
+}
+
+.clipp-coupon-info {
     flex: 1;
-    margin-right: 12px;
+    min-width: 0;
 }
 
-.clipp-deal-header {
+.clipp-coupon-header {
     display: flex;
     align-items: center;
     gap: 8px;
     margin-bottom: 4px;
+    flex-wrap: wrap;
 }
 
-.clipp-deal-info h4 {
+.clipp-coupon-code {
+    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
     font-size: 14px;
-    color: #0369a1;
-    margin: 0;
     font-weight: 700;
-    font-family: 'Monaco', 'Menlo', monospace;
-    background: rgba(3, 105, 161, 0.1);
-    padding: 2px 6px;
-    border-radius: 4px;
+    color: var(--clipp-blue-700);
+    background: var(--clipp-blue-50);
+    padding: 4px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
 }
 
-.clipp-verified-badge {
-    background: #10b981;
-    color: white;
+.clipp-coupon-badge {
     font-size: 10px;
-    padding: 2px 4px;
-    border-radius: 3px;
+    padding: 3px 8px;
+    border-radius: 4px;
     font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
 }
 
-.clipp-deal-info p {
-    font-size: 12px;
-    color: #0284c7;
-    margin: 0;
-    line-height: 1.3;
+.clipp-coupon-badge.verified {
+    background: var(--clipp-green-500);
+    color: var(--clipp-white);
+}
+
+.clipp-coupon-badge.reddit {
+    background: var(--clipp-orange-500);
+    color: var(--clipp-white);
+}
+
+.clipp-coupon-badge.user {
+    background: var(--clipp-purple-500);
+    color: var(--clipp-white);
+}
+
+.clipp-coupon-badge.community {
+    background: var(--clipp-gray-500);
+    color: var(--clipp-white);
+}
+
+.clipp-coupon-desc {
+    font-size: 13px;
+    color: var(--clipp-gray-600);
+    margin-bottom: 4px;
+    line-height: 1.4;
 }
 
 .clipp-coupon-source {
-    font-size: 10px;
-    color: #6b7280;
-    font-style: italic;
-    margin-top: 2px;
-    display: block;
+    font-size: 11px;
+    color: var(--clipp-gray-400);
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
-.clipp-deal-apply {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    color: white;
-    border: none;
-    padding: 8px 16px;
+.clipp-coupon-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.clipp-copy-btn,
+.clipp-apply-btn {
+    padding: 10px 16px;
     border-radius: 8px;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-width: 70px;
-    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    border: none;
 }
 
-.clipp-deal-apply:hover:not(:disabled) {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+.clipp-copy-btn {
+    background: var(--clipp-gray-100);
+    color: var(--clipp-gray-700);
+}
+
+.clipp-copy-btn:hover {
+    background: var(--clipp-gray-200);
+}
+
+.clipp-apply-btn {
+    background: linear-gradient(135deg, var(--clipp-blue-500), var(--clipp-blue-600));
+    color: var(--clipp-white);
+    box-shadow: var(--shadow-blue);
+}
+
+.clipp-apply-btn:hover {
+    background: linear-gradient(135deg, var(--clipp-blue-600), var(--clipp-blue-700));
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
 }
 
-.clipp-deal-apply:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-}
-
-.clipp-deal-apply.clipp-applying {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
+.clipp-apply-btn.applying {
+    background: linear-gradient(135deg, var(--clipp-orange-500), #ea580c);
     animation: pulse 1.5s infinite;
 }
 
-.clipp-deal-apply.clipp-applied {
-    background: linear-gradient(135deg, #10b981, #059669);
+.clipp-apply-btn.applied {
+    background: linear-gradient(135deg, var(--clipp-green-500), var(--clipp-green-600));
 }
 
-.clipp-deal-apply.clipp-failed {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
+.clipp-apply-btn.failed {
+    background: linear-gradient(135deg, var(--clipp-red-500), #dc2626);
 }
 
-/* Empty state */
-.clipp-deals-empty {
+.clipp-delete-btn {
+    padding: 8px;
+    background: transparent;
+    border: none;
+    color: var(--clipp-gray-400);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.clipp-delete-btn:hover {
+    background: var(--clipp-red-500);
+    color: var(--clipp-white);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Loading State */
+.clipp-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    gap: 12px;
+}
+
+.clipp-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--clipp-gray-200);
+    border-top-color: var(--clipp-blue-500);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.clipp-loading-text {
+    font-size: 14px;
+    color: var(--clipp-gray-500);
+}
+
+/* Empty State */
+.clipp-empty-state {
     text-align: center;
-    padding: 24px 0;
+    padding: 32px 16px;
 }
 
 .clipp-empty-icon {
-    font-size: 32px;
+    font-size: 48px;
     margin-bottom: 12px;
     opacity: 0.6;
 }
 
-.clipp-deals-empty p {
+.clipp-empty-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--clipp-gray-700);
+    margin-bottom: 6px;
+}
+
+.clipp-empty-desc {
     font-size: 13px;
-    color: #6b7280;
-    line-height: 1.4;
-    max-width: 280px;
-    margin: 0 auto;
+    color: var(--clipp-gray-500);
+    line-height: 1.5;
 }
 
-/* Store Button Section */
-.clipp-store-section {
-    padding: 0 20px 20px 20px;
-}
-
-.clipp-store-btn {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 16px 20px;
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
-    text-decoration: none;
-}
-
-.clipp-store-btn:hover {
-    background: linear-gradient(135deg, #2563eb, #1e40af);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
-}
-
-.clipp-store-btn:active {
-    transform: translateY(0);
-}
-
-.clipp-store-icon {
-    font-size: 20px;
-}
-
-/* Statistics */
+/* Statistics Grid */
 .clipp-stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
-    margin-bottom: 16px;
 }
 
 .clipp-stat-card {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 14px;
-    background: white;
-    border-radius: 10px;
-    border: 1px solid #e5e7eb;
+    gap: 12px;
+    padding: 16px;
+    background: var(--clipp-gray-50);
+    border-radius: 12px;
+    border: 1px solid var(--clipp-gray-100);
     transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .clipp-stat-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transform: translateY(-1px);
+    background: var(--clipp-white);
+    border-color: var(--clipp-gray-200);
+    box-shadow: var(--shadow-sm);
 }
 
 .clipp-stat-icon {
-    font-size: 22px;
+    font-size: 24px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    background: #f3f4f6;
+    background: var(--clipp-white);
+    border-radius: 10px;
+    box-shadow: var(--shadow-sm);
 }
 
 .clipp-stat-content {
@@ -406,74 +562,61 @@ body {
 
 .clipp-stat-label {
     font-size: 11px;
-    color: #6b7280;
-    margin-bottom: 3px;
-    font-weight: 500;
+    color: var(--clipp-gray-500);
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
 }
 
 .clipp-stat-value {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
-    color: #059669;
-    line-height: 1;
+    color: var(--clipp-blue-600);
 }
 
-/* Manual Purchase Button */
-.clipp-manual-purchase {
-    margin-top: 12px;
+/* Store Button */
+.clipp-store-section {
+    padding: 0 24px 20px;
 }
 
-.clipp-manual-btn {
+.clipp-store-btn {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 12px;
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
-    color: white;
+    gap: 10px;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, var(--clipp-blue-500), var(--clipp-blue-600));
+    color: var(--clipp-white);
     border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-blue);
+    text-decoration: none;
 }
 
-.clipp-manual-btn:hover {
-    background: linear-gradient(135deg, #4f46e5, #4338ca);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+.clipp-store-btn:hover {
+    background: linear-gradient(135deg, var(--clipp-blue-600), var(--clipp-blue-700));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px -4px rgba(59, 130, 246, 0.5);
 }
 
-/* Spinner Animation */
-.clipp-spinner {
-    width: 20px;
-    height: 20px;
-    border: 2px solid #e5e7eb;
-    border-top: 2px solid #3b82f6;
-    border-radius: 50%;
-    animation: clipp-spin 1s linear infinite;
+.clipp-store-btn:active {
+    transform: translateY(0);
 }
 
-@keyframes clipp-spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+.clipp-store-btn-icon {
+    font-size: 20px;
 }
 
 /* Footer */
 .clipp-popup-footer {
-    padding: 16px 20px;
-    background: #f9fafb;
-    border-top: 1px solid #e5e7eb;
+    padding: 16px 24px;
+    background: var(--clipp-gray-50);
+    border-top: 1px solid var(--clipp-gray-100);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -482,82 +625,76 @@ body {
 .clipp-footer-links {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
     font-size: 12px;
 }
 
 .clipp-footer-links a {
-    color: #6b7280;
+    color: var(--clipp-gray-500);
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s ease;
 }
 
 .clipp-footer-links a:hover {
-    color: #3b82f6;
+    color: var(--clipp-blue-600);
 }
 
 .clipp-separator {
-    color: #d1d5db;
+    color: var(--clipp-gray-300);
 }
 
 .clipp-version {
     font-size: 11px;
-    color: #9ca3af;
+    color: var(--clipp-gray-400);
     font-weight: 500;
 }
 
-/* Smooth transitions and animations */
-.clipp-popup-container {
-    animation: slideIn 0.3s ease-out;
+/* Success Toast */
+.clipp-toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    padding: 12px 20px;
+    background: var(--clipp-black);
+    color: var(--clipp-white);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
 }
 
-@keyframes slideIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(10px);
-    }
-    to { 
-        opacity: 1; 
-        transform: translateY(0);
-    }
+.clipp-toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
 }
 
-/* Responsive adjustments for smaller screens */
-@media (max-width: 400px) {
-    body {
-        width: 340px;
-    }
-    
-    .clipp-popup-header {
-        padding: 16px;
-    }
-    
-    .clipp-testing-section,
-    .clipp-deals-section,
-    .clipp-stats-section,
-    .clipp-store-section {
-        padding: 16px;
-    }
+.clipp-toast.success {
+    background: var(--clipp-green-500);
 }
 
-/* Dark mode support (if needed in future) */
-@media (prefers-color-scheme: dark) {
-    body {
-        background: linear-gradient(135deg, #1f2937, #111827);
-        color: #f9fafb;
-    }
-    
-    .clipp-testing-content,
-    .clipp-deals-content,
-    .clipp-stat-card {
-        background: #374151;
-        border-color: #4b5563;
-        color: #f9fafb;
-    }
-    
-    .clipp-popup-footer {
-        background: #374151;
-        border-color: #4b5563;
-    }
+.clipp-toast.error {
+    background: var(--clipp-red-500);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--clipp-gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--clipp-gray-300);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--clipp-gray-400);
 }

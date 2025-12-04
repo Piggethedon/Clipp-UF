@@ -5,17 +5,49 @@
   
   "popup": {
     "store_status": {
-      "not_supported": "Inget stöd för denna sida",
+      "not_supported": "Ingen stödd butik",
       "not_supported_desc": "Besök en av våra stödda butiker för att börja spara",
-      "supported": "är redo att hjälpa dig spara pengar",
+      "supported": "Redo att hjälpa dig spara!",
       "scanning": "Söker efter rabattkoder...",
       "found_coupons": "Rabattkoder hittade!",
       "no_coupons": "Inga rabattkoder hittades för denna butik",
       "error": "Fel vid sökning efter rabattkoder"
     },
     
+    "add_code": {
+      "title": "➕ Lägg till egen kod",
+      "placeholder_code": "RABATTKOD",
+      "placeholder_desc": "Beskrivning (valfritt)",
+      "button": "Lägg till",
+      "success": "Kod tillagd!",
+      "deleted": "Kod borttagen",
+      "user_added": "Tillagd av dig",
+      "error": "Kunde inte lägga till kod"
+    },
+    
+    "coupons": {
+      "title": "🏷️ Rabattkoder",
+      "found": "Rabattkoder funna",
+      "testing": "Testar koder...",
+      "none_found": "Inga koder hittades",
+      "no_coupons_message": "Inga kuponger hittades för denna butik.",
+      "apply": "Använd",
+      "applied": "Tillagd!",
+      "failed": "Fungerar inte",
+      "copy": "Kopiera",
+      "copied": "Kod kopierad!"
+    },
+    
+    "sources": {
+      "user": "Din kod",
+      "verified": "Verifierad",
+      "reddit": "Reddit",
+      "community": "Community",
+      "api": "Verifierad"
+    },
+    
     "statistics": {
-      "title": "Din Clipp-statistik",
+      "title": "📊 Din statistik",
       "purchases": "Köp via Clipp",
       "total_saved": "Totalt sparat",
       "currency": "SEK"
@@ -26,15 +58,6 @@
       "visit_store": "Besök butik"
     },
     
-    "coupons": {
-      "found": "Rabattkoder funna",
-      "testing": "Testar koder...",
-      "none_found": "Inga koder hittades",
-      "no_coupons_message": "Inga kuponger hittades för denna butik, men du kan ändå handla via Clipp.",
-      "apply": "Använd",
-      "applied": "Tillagd!",
-      "failed": "Fungerar inte"
-    },
     "store_button": "Gå till {store}",
     
     "footer": {
@@ -71,6 +94,10 @@
     "network_error": "Nätverksfel - försök igen senare",
     "store_not_supported": "Denna butik stöds inte ännu",
     "coupon_apply_failed": "Kunde inte tillämpa rabattkoden",
-    "unknown_error": "Ett okänt fel inträffade"
+    "unknown_error": "Ett okänt fel inträffade",
+    "try_again": "Försök igen senare",
+    "empty_code": "Ange en rabattkod",
+    "code_exists": "Denna kod finns redan",
+    "copy_failed": "Kunde inte kopiera"
   }
 }

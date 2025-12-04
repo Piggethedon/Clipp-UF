@@ -29,66 +29,70 @@
             <span id="tagline-text">Spara pengar smartare – automatiskt</span>
         </div>
 
-        <!-- Section 1: Pågående kodtestning -->
-        <div class="clipp-testing-section" id="testing-section">
-            <h3 id="testing-title">Pågående kodtestning</h3>
-            <div class="clipp-testing-content" id="testing-content">
-                <div class="clipp-testing-idle" id="testing-idle">
-                    <div class="clipp-testing-icon">💤</div>
-                    <p id="testing-idle-text">Väntar på att du ska handla...</p>
-                </div>
-                
-                <div class="clipp-testing-active" id="testing-active" style="display: none;">
-                    <div class="clipp-testing-spinner">
-                        <div class="clipp-spinner"></div>
-                    </div>
-                    <div class="clipp-testing-info">
-                        <h4 id="testing-code">Testar kod: SAVE20</h4>
-                        <p id="testing-status">Kontrollerar rabatt...</p>
-                    </div>
-                </div>
-                
-                <div class="clipp-testing-result" id="testing-result" style="display: none;">
-                    <div class="clipp-result-icon" id="result-icon">✅</div>
-                    <div class="clipp-result-info">
-                        <h4 id="result-title">Kod fungerar!</h4>
-                        <p id="result-desc">Sparade 150 SEK</p>
-                    </div>
+        <!-- Store Status -->
+        <div class="clipp-store-status" id="store-status">
+            <div class="clipp-store-badge" id="store-badge">
+                <div class="clipp-store-icon">🛒</div>
+                <div class="clipp-store-info">
+                    <h4 id="store-name">Söker butik...</h4>
+                    <p id="store-status-text">Kontrollerar aktuell sida</p>
                 </div>
             </div>
         </div>
 
-        <!-- Section 2: Aktiva deals -->
-        <div class="clipp-deals-section" id="deals-section">
-            <h3 id="deals-title">Aktiva deals</h3>
-            <div class="clipp-deals-content" id="deals-content">
-                <div class="clipp-deals-loading" id="deals-loading">
-                    <div class="clipp-spinner"></div>
-                    <p id="deals-loading-text">Söker rabattkoder...</p>
+        <!-- Add Code Section -->
+        <div class="clipp-section" id="add-code-section">
+            <div class="clipp-section-header">
+                <span class="clipp-section-title" id="add-code-title">➕ Lägg till egen kod</span>
+            </div>
+            <div class="clipp-add-code-form">
+                <div class="clipp-input-group">
+                    <input type="text" class="clipp-input code-input" id="code-input" placeholder="RABATTKOD" maxlength="30">
+                    <button class="clipp-add-btn" id="add-code-btn">Lägg till</button>
                 </div>
-                
-                <div class="clipp-deals-list" id="deals-list" style="display: none;">
-                    <!-- Deals will be populated by JavaScript -->
-                </div>
-                
-                <div class="clipp-deals-empty" id="deals-empty" style="display: none;">
-                    <div class="clipp-empty-icon">😕</div>
-                    <p id="deals-empty-text">Inga kuponger hittades för denna butik, men du kan ändå handla via Clipp.</p>
-                </div>
+                <input type="text" class="clipp-input" id="code-desc-input" placeholder="Beskrivning (valfritt)">
+            </div>
+        </div>
+
+        <!-- Coupons Section -->
+        <div class="clipp-section" id="coupons-section">
+            <div class="clipp-section-header">
+                <span class="clipp-section-title" id="coupons-title">🏷️ Rabattkoder</span>
+                <span class="clipp-section-badge" id="coupons-count" style="display: none;">0</span>
+            </div>
+            
+            <!-- Loading State -->
+            <div class="clipp-loading" id="coupons-loading">
+                <div class="clipp-spinner"></div>
+                <span class="clipp-loading-text" id="loading-text">Söker rabattkoder...</span>
+            </div>
+            
+            <!-- Coupons List -->
+            <div class="clipp-coupons-list" id="coupons-list" style="display: none;">
+                <!-- Coupons will be populated by JavaScript -->
+            </div>
+            
+            <!-- Empty State -->
+            <div class="clipp-empty-state" id="coupons-empty" style="display: none;">
+                <div class="clipp-empty-icon">🔍</div>
+                <h4 class="clipp-empty-title" id="empty-title">Inga koder hittades</h4>
+                <p class="clipp-empty-desc" id="empty-desc">Lägg till en egen kod ovan eller besök en stödd butik.</p>
             </div>
         </div>
 
         <!-- Store Button Section -->
         <div class="clipp-store-section" id="store-section" style="display: none;">
             <button class="clipp-store-btn" id="store-button">
-                <span class="clipp-store-icon">🛒</span>
+                <span class="clipp-store-btn-icon">🛒</span>
                 <span id="store-button-text">Gå till butik</span>
             </button>
         </div>
 
-        <!-- Section 3: Din Clipp-statistik -->
-        <div class="clipp-stats-section">
-            <h3 id="stats-title">Din Clipp-statistik</h3>
+        <!-- Statistics Section -->
+        <div class="clipp-section">
+            <div class="clipp-section-header">
+                <span class="clipp-section-title" id="stats-title">📊 Din statistik</span>
+            </div>
             <div class="clipp-stats-grid">
                 <div class="clipp-stat-card">
                     <div class="clipp-stat-icon">🛒</div>
@@ -105,14 +109,6 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Manual Purchase Button -->
-            <div class="clipp-manual-purchase" id="manual-purchase" style="display: none;">
-                <button class="clipp-manual-btn" id="manual-purchase-btn">
-                    <span>📝</span>
-                    <span id="manual-btn-text">Markera som köpt</span>
-                </button>
-            </div>
         </div>
 
         <!-- Footer -->
@@ -122,10 +118,14 @@
                 <span class="clipp-separator">•</span>
                 <a href="#" id="support-link">Support</a>
             </div>
-            <div class="clipp-version">v1.0.0</div>
+            <div class="clipp-version">v1.1.0</div>
         </div>
     </div>
 
+    <!-- Toast for notifications -->
+    <div class="clipp-toast" id="toast"></div>
+
+    <script src="services/CommunityCodeService.js"></script>
     <script src="popup.js"></script>
 </body>
 </html>
