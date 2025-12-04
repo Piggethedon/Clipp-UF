@@ -1,4 +1,4 @@
-// Clipp Enhanced Popup Script
+// Clipp Enhanced Popup Script v1.1
 class ClippPopup {
   constructor() {
     this.currentLanguage = 'sv';
@@ -6,23 +6,31 @@ class ClippPopup {
     this.stores = [];
     this.currentTab = null;
     this.currentStore = null;
-    this.couponsFound = false;
+    this.userCodes = [];
+    this.foundCoupons = [];
     this.isScanning = false;
     this.userStats = null;
+    this.communityService = null;
     
     this.init();
   }
 
   async init() {
     try {
-      console.log('[ClippPopup] Initializing popup');
+      console.log('[ClippPopup] Initializing popup v1.1');
+      
+      // Initialize community service
+      if (typeof CommunityCodeService !== 'undefined') {
+        this.communityService = new CommunityCodeService();
+      }
       
       // Load all required data
       await Promise.all([
         this.loadLanguageData(),
         this.loadStores(),
         this.getCurrentTab(),
-        this.loadUserStats()
+        this.loadUserStats(),
+        this.loadUserCodes()
       ]);
       
       // Set up UI
@@ -30,12 +38,8 @@ class ClippPopup {
       this.checkCurrentStore();
       this.updateLanguage();
       
-      // Start coupon scanning if on supported store
-      if (this.currentStore) {
-        await this.startCouponScan();
-      } else {
-        this.showUnsupportedState();
-      }
+      // Start coupon scanning
+      await this.startCouponScan();
       
       console.log('[ClippPopup] Popup initialized successfully');
     } catch (error) {
@@ -50,7 +54,6 @@ class ClippPopup {
       const response = await chrome.runtime.sendMessage({ action: 'getLanguageData' });
       this.languageData = response.languageData || {};
       
-      // Load saved language preference
       const result = await chrome.storage.local.get(['clippLanguage']);
       if (result.clippLanguage) {
         this.currentLanguage = result.clippLanguage;
@@ -90,6 +93,26 @@ class ClippPopup {
     }
   }
 
+  // Load user-added codes
+  async loadUserCodes() {
+    try {
+      const result = await chrome.storage.local.get(['clippUserCodes']);
+      this.userCodes = result.clippUserCodes || [];
+    } catch (error) {
+      console.error('[ClippPopup] Failed to load user codes:', error);
+      this.userCodes = [];
+    }
+  }
+
+  // Save user codes to storage
+  async saveUserCodes() {
+    try {
+      await chrome.storage.local.set({ clippUserCodes: this.userCodes });
+    } catch (error) {
+      console.error('[ClippPopup] Failed to save user codes:', error);
+    }
+  }
+
   // Update statistics display
   updateStatsDisplay() {
     if (!this.userStats) return;
@@ -118,58 +141,96 @@ class ClippPopup {
       });
     });
 
+    // Add code button
+    const addCodeBtn = document.getElementById('add-code-btn');
+    if (addCodeBtn) {
+      addCodeBtn.addEventListener('click', () => this.addUserCode());
+    }
+
+    // Code input - enter key
+    const codeInput = document.getElementById('code-input');
+    if (codeInput) {
+      codeInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') this.addUserCode();
+      });
+    }
+
     // Store button
     const storeButton = document.getElementById('store-button');
     if (storeButton) {
-      storeButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.visitStore();
-      });
-    }
-
-    // Manual purchase tracking button (if implemented)
-    const manualBtn = document.getElementById('manual-purchase-btn');
-    if (manualBtn) {
-      manualBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.showManualPurchaseDialog();
-      });
+      storeButton.addEventListener('click', () => this.visitStore());
     }
 
     // Footer links
-    const privacyLink = document.getElementById('privacy-link');
-    if (privacyLink) {
-      privacyLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.showPrivacyInfo();
-      });
+    document.getElementById('privacy-link')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      chrome.tabs.create({ url: 'https://clipp.se/privacy' });
+    });
+
+    document.getElementById('support-link')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      chrome.tabs.create({ url: 'https://clipp.se/support' });
+    });
+  }
+
+  // Add user code
+  async addUserCode() {
+    const codeInput = document.getElementById('code-input');
+    const descInput = document.getElementById('code-desc-input');
+    
+    const code = codeInput?.value.trim().toUpperCase();
+    const description = descInput?.value.trim() || '';
+    
+    if (!code) {
+      this.showToast(this.t('errors.empty_code') || 'Ange en rabattkod', 'error');
+      return;
     }
 
-    const supportLink = document.getElementById('support-link');
-    if (supportLink) {
-      supportLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.showSupportInfo();
-      });
+    // Check for duplicates
+    const exists = this.userCodes.some(c => c.code === code) || 
+                   this.foundCoupons.some(c => c.code === code);
+    if (exists) {
+      this.showToast(this.t('errors.code_exists') || 'Denna kod finns redan', 'error');
+      return;
     }
+
+    // Add the code
+    const newCode = {
+      code,
+      description: description || this.t('popup.add_code.user_added') || 'Tillagd av dig',
+      source: 'user',
+      addedAt: Date.now(),
+      storeId: this.currentStore?.storeId || 'general'
+    };
+
+    this.userCodes.unshift(newCode);
+    await this.saveUserCodes();
+
+    // Clear inputs
+    if (codeInput) codeInput.value = '';
+    if (descInput) descInput.value = '';
+
+    // Update display
+    this.renderAllCoupons();
+    this.showToast(this.t('popup.add_code.success') || 'Kod tillagd!', 'success');
+  }
+
+  // Delete user code
+  async deleteUserCode(code) {
+    this.userCodes = this.userCodes.filter(c => c.code !== code);
+    await this.saveUserCodes();
+    this.renderAllCoupons();
+    this.showToast(this.t('popup.add_code.deleted') || 'Kod borttagen', 'success');
   }
 
   // Change language
   async changeLanguage(lang) {
     if (this.currentLanguage !== lang) {
       this.currentLanguage = lang;
-      
-      // Save language preference
       await chrome.storage.local.set({ clippLanguage: lang });
-      
-      // Update UI
       this.updateLanguage();
       this.updateLanguageButtons();
-      
-      // Update coupon display if needed
-      if (this.couponsFound) {
-        this.updateCouponDisplay();
-      }
+      this.renderAllCoupons();
     }
   }
 
@@ -178,30 +239,35 @@ class ClippPopup {
     const lang = this.languageData[this.currentLanguage];
     if (!lang) return;
 
-    // Update text elements
     const elements = {
-      'tagline-text': lang.tagline || 'Spara pengar smartare – automatiskt',
-      'testing-title': this.t('popup.testing.title') || (this.currentLanguage === 'sv' ? 'Pågående kodtestning' : 'Ongoing code testing'),
-      'testing-idle-text': this.t('popup.testing.idle') || (this.currentLanguage === 'sv' ? 'Väntar på att du ska handla...' : 'Waiting for you to shop...'),
-      'deals-title': this.t('popup.deals.title') || (this.currentLanguage === 'sv' ? 'Aktiva deals' : 'Active deals'),
-      'deals-loading-text': lang.popup?.store_status?.scanning || 'Söker rabattkoder...',
-      'stats-title': lang.popup?.statistics?.title || 'Din Clipp-statistik',
-      'purchases-label': lang.popup?.statistics?.purchases || 'Köp via Clipp',
-      'savings-label': lang.popup?.statistics?.total_saved || 'Totalt sparat',
-      'privacy-link': lang.popup?.footer?.privacy || 'Integritet',
-      'support-link': lang.popup?.footer?.support || 'Support'
+      'tagline-text': lang.tagline,
+      'add-code-title': this.t('popup.add_code.title') || '➕ Lägg till egen kod',
+      'coupons-title': this.t('popup.coupons.title') || '🏷️ Rabattkoder',
+      'loading-text': lang.popup?.store_status?.scanning,
+      'stats-title': this.t('popup.statistics.title') || '📊 Din statistik',
+      'purchases-label': lang.popup?.statistics?.purchases,
+      'savings-label': lang.popup?.statistics?.total_saved,
+      'privacy-link': lang.popup?.footer?.privacy,
+      'support-link': lang.popup?.footer?.support
     };
 
     Object.entries(elements).forEach(([id, text]) => {
       const element = document.getElementById(id);
-      if (element) {
-        element.textContent = text;
-      }
+      if (element && text) element.textContent = text;
     });
 
-    // Update store button if store is detected
+    // Update button texts
+    const addBtn = document.getElementById('add-code-btn');
+    if (addBtn) addBtn.textContent = this.t('popup.add_code.button') || 'Lägg till';
+
+    const codeInput = document.getElementById('code-input');
+    if (codeInput) codeInput.placeholder = this.t('popup.add_code.placeholder_code') || 'RABATTKOD';
+
+    const descInput = document.getElementById('code-desc-input');
+    if (descInput) descInput.placeholder = this.t('popup.add_code.placeholder_desc') || 'Beskrivning (valfritt)';
+
     if (this.currentStore) {
-      this.updateStoreButton();
+      this.updateStoreStatus();
     }
   }
 
@@ -217,7 +283,7 @@ class ClippPopup {
   checkCurrentStore() {
     if (!this.currentTab || !this.currentTab.url) {
       this.currentStore = null;
-      this.hideStoreButton();
+      this.updateStoreStatus();
       return;
     }
 
@@ -231,234 +297,280 @@ class ClippPopup {
         )
       );
 
+      this.currentStore = matchingStore || null;
+      this.updateStoreStatus();
+      
       if (matchingStore) {
-        this.currentStore = matchingStore;
-        this.showStoreButton();
         console.log(`[ClippPopup] Detected store: ${matchingStore.storeName}`);
-      } else {
-        this.currentStore = null;
-        this.hideStoreButton();
+        this.showStoreButton();
       }
     } catch (error) {
       console.error('[ClippPopup] Error checking current store:', error);
       this.currentStore = null;
-      this.hideStoreButton();
+    }
+  }
+
+  // Update store status badge
+  updateStoreStatus() {
+    const badge = document.getElementById('store-badge');
+    const nameEl = document.getElementById('store-name');
+    const statusEl = document.getElementById('store-status-text');
+
+    if (this.currentStore) {
+      badge?.classList.add('active');
+      if (nameEl) nameEl.textContent = this.currentStore.storeName;
+      if (statusEl) statusEl.textContent = this.t('popup.store_status.supported') || 'Redo att hjälpa dig spara!';
+    } else {
+      badge?.classList.remove('active');
+      if (nameEl) nameEl.textContent = this.t('popup.store_status.not_supported') || 'Ingen stödd butik';
+      if (statusEl) statusEl.textContent = this.t('popup.store_status.not_supported_desc') || 'Besök en stödd butik för att spara';
     }
   }
 
   // Show store button
   showStoreButton() {
     const storeSection = document.getElementById('store-section');
-    if (storeSection && this.currentStore) {
-      this.updateStoreButton();
-      storeSection.style.display = 'block';
-    }
-  }
-
-  // Update store button text
-  updateStoreButton() {
     const storeButtonText = document.getElementById('store-button-text');
-    if (storeButtonText && this.currentStore) {
-      const buttonText = this.currentLanguage === 'sv' 
-        ? `Gå till ${this.currentStore.storeName}`
-        : `Go to ${this.currentStore.storeName}`;
-      storeButtonText.textContent = buttonText;
-    }
-  }
-
-  // Hide store button
-  hideStoreButton() {
-    const storeSection = document.getElementById('store-section');
-    if (storeSection) {
-      storeSection.style.display = 'none';
+    
+    if (storeSection && this.currentStore) {
+      storeSection.style.display = 'block';
+      if (storeButtonText) {
+        const text = this.currentLanguage === 'sv' 
+          ? `Gå till ${this.currentStore.storeName}`
+          : `Go to ${this.currentStore.storeName}`;
+        storeButtonText.textContent = text;
+      }
     }
   }
 
   // Visit store via affiliate link
   async visitStore() {
-    if (!this.currentStore || !this.currentStore.affiliateUrl) return;
+    if (!this.currentStore?.affiliateUrl) return;
 
     try {
-      // Record store visit
       await chrome.runtime.sendMessage({
         action: 'visitStore',
         storeId: this.currentStore.storeId,
         storeName: this.currentStore.storeName,
         affiliateUrl: this.currentStore.affiliateUrl
       });
-
-      // Close popup (browser will handle the tab opening)
       window.close();
     } catch (error) {
       console.error('[ClippPopup] Error visiting store:', error);
-      // Fallback - still close popup
-      window.close();
     }
   }
 
   // Start coupon scanning process
   async startCouponScan() {
-    if (this.isScanning || !this.currentStore) return;
+    if (this.isScanning) return;
 
     this.isScanning = true;
     this.showLoadingState();
     
     try {
-      console.log(`[ClippPopup] Starting coupon scan for ${this.currentStore.storeName}`);
+      console.log('[ClippPopup] Starting coupon scan');
       
-      // Add realistic scanning delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Request coupons from background script
-      const response = await chrome.runtime.sendMessage({
-        action: 'findCoupons',
-        store: this.currentStore
-      });
+      // Get coupons from multiple sources in parallel
+      const [apiCoupons, communityCoupons] = await Promise.all([
+        this.fetchAPICoupons(),
+        this.fetchCommunityCoupons()
+      ]);
 
-      if (response && response.success && response.coupons && response.coupons.length > 0) {
-        this.showCouponsFound(response.coupons);
-        this.couponsFound = true;
-        console.log(`[ClippPopup] Found ${response.coupons.length} coupons`);
-      } else {
-        this.showNoCouponsState();
-        this.couponsFound = false;
-        console.log('[ClippPopup] No coupons found');
-      }
+      // Merge all coupons
+      this.foundCoupons = [...apiCoupons, ...communityCoupons];
+      
+      // Remove duplicates
+      this.foundCoupons = this.deduplicateCoupons(this.foundCoupons);
+      
+      console.log(`[ClippPopup] Found ${this.foundCoupons.length} coupons total`);
+      
+      this.renderAllCoupons();
+      
     } catch (error) {
       console.error('[ClippPopup] Error scanning for coupons:', error);
-      this.showErrorState();
-      this.couponsFound = false;
+      this.renderAllCoupons(); // Still show user codes if any
     } finally {
       this.isScanning = false;
     }
   }
 
-  // Show loading state during coupon scan
-  showLoadingState() {
-    this.setDealsState('loading');
-  }
-
-  // Show coupons found state
-  showCouponsFound(coupons) {
-    this.setDealsState('found');
-    this.renderCoupons(coupons);
-  }
-
-  // Show no coupons found state
-  showNoCouponsState() {
-    this.setDealsState('empty');
+  // Fetch coupons from API sources
+  async fetchAPICoupons() {
+    if (!this.currentStore) return [];
     
-    const emptyText = document.getElementById('deals-empty-text');
-    if (emptyText) {
-      const message = this.currentLanguage === 'sv' 
-        ? 'Inga kuponger hittades för denna butik, men du kan ändå handla via Clipp.'
-        : 'No coupons found for this store, but you can still shop via Clipp.';
-      emptyText.textContent = message;
-    }
-  }
-
-  // Show unsupported store state
-  showUnsupportedState() {
-    this.setDealsState('empty');
-    
-    const emptyText = document.getElementById('deals-empty-text');
-    if (emptyText) {
-      const message = this.currentLanguage === 'sv' 
-        ? 'Denna butik stöds inte ännu. Besök en av våra stödda butiker för att börja spara!'
-        : 'This store is not supported yet. Visit one of our supported stores to start saving!';
-      emptyText.textContent = message;
-    }
-  }
-
-  // Show error state
-  showErrorState() {
-    this.setDealsState('empty');
-    
-    const emptyText = document.getElementById('deals-empty-text');
-    if (emptyText) {
-      const message = this.currentLanguage === 'sv' 
-        ? 'Ett fel inträffade när rabattkoder söktes. Försök igen senare.'
-        : 'An error occurred while searching for discount codes. Please try again later.';
-      emptyText.textContent = message;
-    }
-  }
-
-  // Set deals section state
-  setDealsState(state) {
-    const loadingEl = document.getElementById('deals-loading');
-    const listEl = document.getElementById('deals-list');
-    const emptyEl = document.getElementById('deals-empty');
-
-    // Hide all states first
-    if (loadingEl) loadingEl.style.display = 'none';
-    if (listEl) listEl.style.display = 'none';
-    if (emptyEl) emptyEl.style.display = 'none';
-
-    // Show appropriate state
-    switch (state) {
-      case 'loading':
-        if (loadingEl) loadingEl.style.display = 'flex';
-        break;
-      case 'found':
-        if (listEl) listEl.style.display = 'block';
-        break;
-      case 'empty':
-        if (emptyEl) emptyEl.style.display = 'block';
-        break;
-    }
-  }
-
-  // Render coupon list
-  renderCoupons(coupons) {
-    const dealsList = document.getElementById('deals-list');
-    if (!dealsList || !coupons) return;
-
-    dealsList.innerHTML = '';
-    
-    coupons.forEach((coupon, index) => {
-      const dealItem = document.createElement('div');
-      dealItem.className = 'clipp-deal-item';
-      dealItem.setAttribute('data-coupon-index', index);
-      
-      const applyText = this.t('popup.coupons.apply') || (this.currentLanguage === 'sv' ? 'Använd' : 'Apply');
-      const verifiedBadge = coupon.verified ? 
-        '<span class="clipp-verified-badge">✓</span>' : '';
-      
-      dealItem.innerHTML = `
-        <div class="clipp-deal-info">
-          <div class="clipp-deal-header">
-            <h4>${coupon.code}</h4>
-            ${verifiedBadge}
-          </div>
-          <p>${coupon.description}</p>
-          ${coupon.source ? `<small class="clipp-coupon-source">Från: ${coupon.source}</small>` : ''}
-        </div>
-        <button class="clipp-deal-apply" data-code="${coupon.code}">
-          ${applyText}
-        </button>
-      `;
-      
-      // Add click handler for apply button
-      const applyBtn = dealItem.querySelector('.clipp-deal-apply');
-      applyBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.applyCoupon(coupon, applyBtn);
+    try {
+      const response = await chrome.runtime.sendMessage({
+        action: 'findCoupons',
+        store: this.currentStore
       });
-      
-      dealsList.appendChild(dealItem);
+
+      if (response?.success && response?.coupons) {
+        return response.coupons.map(c => ({
+          ...c,
+          source: c.source || 'api'
+        }));
+      }
+    } catch (error) {
+      console.error('[ClippPopup] API coupon fetch error:', error);
+    }
+    return [];
+  }
+
+  // Fetch coupons from community sources (Reddit, etc.)
+  async fetchCommunityCoupons() {
+    if (!this.communityService || !this.currentStore) return [];
+    
+    try {
+      const coupons = await this.communityService.findCodes(this.currentStore.storeName);
+      return coupons.map(c => ({
+        ...c,
+        source: c.source || 'community'
+      }));
+    } catch (error) {
+      console.error('[ClippPopup] Community coupon fetch error:', error);
+    }
+    return [];
+  }
+
+  // Remove duplicate coupons
+  deduplicateCoupons(coupons) {
+    const seen = new Set();
+    return coupons.filter(c => {
+      if (seen.has(c.code)) return false;
+      seen.add(c.code);
+      return true;
     });
   }
 
-  // Update coupon display when language changes
-  updateCouponDisplay() {
-    const applyButtons = document.querySelectorAll('.clipp-deal-apply');
-    const applyText = this.t('popup.coupons.apply') || (this.currentLanguage === 'sv' ? 'Använd' : 'Apply');
+  // Show loading state
+  showLoadingState() {
+    document.getElementById('coupons-loading').style.display = 'flex';
+    document.getElementById('coupons-list').style.display = 'none';
+    document.getElementById('coupons-empty').style.display = 'none';
+    document.getElementById('coupons-count').style.display = 'none';
+  }
+
+  // Render all coupons (user + found)
+  renderAllCoupons() {
+    const loadingEl = document.getElementById('coupons-loading');
+    const listEl = document.getElementById('coupons-list');
+    const emptyEl = document.getElementById('coupons-empty');
+    const countEl = document.getElementById('coupons-count');
+
+    // Hide loading
+    if (loadingEl) loadingEl.style.display = 'none';
+
+    // Combine user codes (filtered by store if applicable) and found coupons
+    const relevantUserCodes = this.userCodes.filter(c => 
+      c.storeId === 'general' || c.storeId === this.currentStore?.storeId
+    );
     
-    applyButtons.forEach(btn => {
-      if (!btn.classList.contains('clipp-applying') && !btn.classList.contains('clipp-applied')) {
-        btn.textContent = applyText;
-      }
-    });
+    const allCoupons = [...relevantUserCodes, ...this.foundCoupons];
+
+    if (allCoupons.length === 0) {
+      if (listEl) listEl.style.display = 'none';
+      if (emptyEl) emptyEl.style.display = 'block';
+      if (countEl) countEl.style.display = 'none';
+      return;
+    }
+
+    // Update count badge
+    if (countEl) {
+      countEl.textContent = allCoupons.length;
+      countEl.style.display = 'inline-block';
+    }
+
+    // Show list
+    if (emptyEl) emptyEl.style.display = 'none';
+    if (listEl) {
+      listEl.style.display = 'flex';
+      listEl.innerHTML = '';
+
+      allCoupons.forEach((coupon, index) => {
+        const item = this.createCouponElement(coupon, index);
+        listEl.appendChild(item);
+      });
+    }
+  }
+
+  // Create coupon element
+  createCouponElement(coupon, index) {
+    const item = document.createElement('div');
+    item.className = `clipp-coupon-item ${this.getCouponTypeClass(coupon.source)}`;
+    item.style.animationDelay = `${index * 0.05}s`;
+
+    const badge = this.getCouponBadge(coupon);
+    const applyText = this.t('popup.coupons.apply') || 'Använd';
+    const copyText = this.t('popup.coupons.copy') || 'Kopiera';
+    
+    const isUserCode = coupon.source === 'user';
+    const deleteBtn = isUserCode ? `
+      <button class="clipp-delete-btn" data-code="${coupon.code}" title="Ta bort">
+        ✕
+      </button>
+    ` : '';
+
+    item.innerHTML = `
+      <div class="clipp-coupon-info">
+        <div class="clipp-coupon-header">
+          <span class="clipp-coupon-code">${coupon.code}</span>
+          ${badge}
+        </div>
+        <p class="clipp-coupon-desc">${coupon.description || ''}</p>
+        ${coupon.sourceLabel ? `<span class="clipp-coupon-source">📍 ${coupon.sourceLabel}</span>` : ''}
+      </div>
+      <div class="clipp-coupon-actions">
+        <button class="clipp-copy-btn" data-code="${coupon.code}">${copyText}</button>
+        ${this.currentStore ? `<button class="clipp-apply-btn" data-code="${coupon.code}">${applyText}</button>` : ''}
+        ${deleteBtn}
+      </div>
+    `;
+
+    // Event listeners
+    item.querySelector('.clipp-copy-btn')?.addEventListener('click', () => this.copyCode(coupon.code));
+    item.querySelector('.clipp-apply-btn')?.addEventListener('click', (e) => this.applyCoupon(coupon, e.target));
+    item.querySelector('.clipp-delete-btn')?.addEventListener('click', () => this.deleteUserCode(coupon.code));
+
+    return item;
+  }
+
+  // Get CSS class for coupon type
+  getCouponTypeClass(source) {
+    switch (source) {
+      case 'user': return 'user-added';
+      case 'reddit': return 'reddit';
+      case 'verified':
+      case 'api': return 'verified';
+      default: return '';
+    }
+  }
+
+  // Get badge HTML for coupon
+  getCouponBadge(coupon) {
+    if (coupon.source === 'user') {
+      return `<span class="clipp-coupon-badge user">${this.t('popup.sources.user') || 'Din kod'}</span>`;
+    }
+    if (coupon.source === 'reddit') {
+      return `<span class="clipp-coupon-badge reddit">Reddit</span>`;
+    }
+    if (coupon.verified) {
+      return `<span class="clipp-coupon-badge verified">✓ ${this.t('popup.sources.verified') || 'Verifierad'}</span>`;
+    }
+    if (coupon.source === 'community') {
+      return `<span class="clipp-coupon-badge community">${this.t('popup.sources.community') || 'Community'}</span>`;
+    }
+    return '';
+  }
+
+  // Copy code to clipboard
+  async copyCode(code) {
+    try {
+      await navigator.clipboard.writeText(code);
+      this.showToast(this.t('popup.coupons.copied') || 'Kod kopierad!', 'success');
+    } catch (error) {
+      console.error('[ClippPopup] Copy failed:', error);
+      this.showToast(this.t('errors.copy_failed') || 'Kunde inte kopiera', 'error');
+    }
   }
 
   // Apply coupon code
@@ -466,12 +578,10 @@ class ClippPopup {
     if (!this.currentTab || !this.currentStore) return;
     
     try {
-      // Update button state
-      buttonEl.classList.add('clipp-applying');
+      buttonEl.classList.add('applying');
       buttonEl.disabled = true;
       buttonEl.textContent = this.currentLanguage === 'sv' ? 'Applicerar...' : 'Applying...';
       
-      // Send apply request to background script
       const response = await chrome.runtime.sendMessage({
         action: 'applyCoupon',
         code: coupon.code,
@@ -479,52 +589,84 @@ class ClippPopup {
         tabId: this.currentTab.id
       });
       
-      if (response && response.success) {
-        // Success state
-        buttonEl.classList.remove('clipp-applying');
-        buttonEl.classList.add('clipp-applied');
-        buttonEl.textContent = this.t('popup.coupons.applied') || (this.currentLanguage === 'sv' ? 'Tillagd!' : 'Applied!');
+      if (response?.success) {
+        buttonEl.classList.remove('applying');
+        buttonEl.classList.add('applied');
+        buttonEl.textContent = this.t('popup.coupons.applied') || 'Tillagd!';
         
-        // Update statistics if savings were reported
         if (response.savings) {
           await this.recordCouponSuccess(coupon, response.savings);
         }
         
-        // Auto-refresh stats
         setTimeout(() => this.loadUserStats(), 1000);
-        
       } else {
-        // Failure state
-        buttonEl.classList.remove('clipp-applying');
-        buttonEl.classList.add('clipp-failed');
-        buttonEl.textContent = this.t('popup.coupons.failed') || (this.currentLanguage === 'sv' ? 'Fungerar inte' : 'Failed');
+        buttonEl.classList.remove('applying');
+        buttonEl.classList.add('failed');
+        buttonEl.textContent = this.t('popup.coupons.failed') || 'Fungerade inte';
+        
+        setTimeout(() => {
+          buttonEl.classList.remove('failed');
+          buttonEl.disabled = false;
+          buttonEl.textContent = this.t('popup.coupons.apply') || 'Använd';
+        }, 2000);
       }
-      
     } catch (error) {
-      console.error('[ClippPopup] Error applying coupon:', error);
+      console.error('[ClippPopup] Apply coupon error:', error);
+      buttonEl.classList.remove('applying');
+      buttonEl.classList.add('failed');
+      buttonEl.textContent = this.t('popup.coupons.failed') || 'Fel';
       
-      // Error state
-      buttonEl.classList.remove('clipp-applying');
-      buttonEl.classList.add('clipp-failed');
-      buttonEl.textContent = this.currentLanguage === 'sv' ? 'Fel' : 'Error';
+      setTimeout(() => {
+        buttonEl.classList.remove('failed');
+        buttonEl.disabled = false;
+        buttonEl.textContent = this.t('popup.coupons.apply') || 'Använd';
+      }, 2000);
     }
   }
 
-  // Record successful coupon usage
+  // Record successful coupon application
   async recordCouponSuccess(coupon, savings) {
     try {
       await chrome.runtime.sendMessage({
-        action: 'recordPurchase',
-        storeId: this.currentStore.storeId,
-        storeName: this.currentStore.storeName,
-        category: this.currentStore.category,
+        action: 'recordSuccess',
+        couponCode: coupon.code,
         savings: savings,
-        currency: 'SEK',
-        couponCode: coupon.code
+        store: this.currentStore
       });
     } catch (error) {
-      console.error('[ClippPopup] Error recording coupon success:', error);
+      console.error('[ClippPopup] Failed to record success:', error);
     }
+  }
+
+  // Show error state
+  showErrorState() {
+    const emptyEl = document.getElementById('coupons-empty');
+    const titleEl = document.getElementById('empty-title');
+    const descEl = document.getElementById('empty-desc');
+    
+    document.getElementById('coupons-loading').style.display = 'none';
+    document.getElementById('coupons-list').style.display = 'none';
+    
+    if (emptyEl) emptyEl.style.display = 'block';
+    if (titleEl) titleEl.textContent = this.t('errors.unknown_error') || 'Något gick fel';
+    if (descEl) descEl.textContent = this.t('errors.try_again') || 'Försök igen senare';
+  }
+
+  // Show toast notification
+  showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+
+    toast.textContent = message;
+    toast.className = `clipp-toast ${type}`;
+    
+    // Show toast
+    setTimeout(() => toast.classList.add('show'), 10);
+    
+    // Hide after 2.5 seconds
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2500);
   }
 
   // Translation helper
@@ -533,34 +675,18 @@ class ClippPopup {
     let value = this.languageData[this.currentLanguage];
     
     for (const key of keys) {
-      value = value?.[key];
+      if (value && typeof value === 'object') {
+        value = value[key];
+      } else {
+        return null;
+      }
     }
     
-    return value || path;
-  }
-
-  // Show manual purchase dialog (placeholder)
-  showManualPurchaseDialog() {
-    // This could open a dialog for manually tracking purchases
-    console.log('[ClippPopup] Manual purchase dialog (not implemented)');
-  }
-
-  // Show privacy information
-  showPrivacyInfo() {
-    chrome.tabs.create({ 
-      url: 'https://clipp.se/privacy' // Replace with actual privacy policy URL
-    });
-  }
-
-  // Show support information
-  showSupportInfo() {
-    chrome.tabs.create({ 
-      url: 'https://clipp.se/support' // Replace with actual support URL
-    });
+    return value;
   }
 }
 
-// Initialize popup when DOM is loaded
+// Initialize popup when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
   new ClippPopup();
 });

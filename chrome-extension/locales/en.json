@@ -5,17 +5,49 @@
   
   "popup": {
     "store_status": {
-      "not_supported": "No support for this site",
+      "not_supported": "Store not supported",
       "not_supported_desc": "Visit one of our supported stores to start saving",
-      "supported": "is ready to help you save money",
+      "supported": "Ready to help you save!",
       "scanning": "Searching for discount codes...",
       "found_coupons": "Discount codes found!",
       "no_coupons": "No discount codes found for this store",
       "error": "Error searching for discount codes"
     },
     
+    "add_code": {
+      "title": "➕ Add your own code",
+      "placeholder_code": "DISCOUNT CODE",
+      "placeholder_desc": "Description (optional)",
+      "button": "Add",
+      "success": "Code added!",
+      "deleted": "Code removed",
+      "user_added": "Added by you",
+      "error": "Could not add code"
+    },
+    
+    "coupons": {
+      "title": "🏷️ Discount Codes",
+      "found": "Coupon codes found",
+      "testing": "Testing codes...",
+      "none_found": "No codes found",
+      "no_coupons_message": "No coupons found for this store.",
+      "apply": "Apply",
+      "applied": "Applied!",
+      "failed": "Doesn't work",
+      "copy": "Copy",
+      "copied": "Code copied!"
+    },
+    
+    "sources": {
+      "user": "Your code",
+      "verified": "Verified",
+      "reddit": "Reddit",
+      "community": "Community",
+      "api": "Verified"
+    },
+    
     "statistics": {
-      "title": "Your Clipp statistics",
+      "title": "📊 Your statistics",
       "purchases": "Purchases via Clipp",
       "total_saved": "Total saved",
       "currency": "SEK"
@@ -26,15 +58,6 @@
       "visit_store": "Visit store"
     },
     
-    "coupons": {
-      "found": "Coupon codes found",
-      "testing": "Testing codes...",
-      "none_found": "No codes found",
-      "no_coupons_message": "No coupons found for this store, but you can still shop via Clipp.",
-      "apply": "Apply",
-      "applied": "Applied!",
-      "failed": "Doesn't work"
-    },
     "store_button": "Go to {store}",
     
     "footer": {
@@ -71,6 +94,10 @@
     "network_error": "Network error - please try again later",
     "store_not_supported": "This store is not supported yet",
     "coupon_apply_failed": "Failed to apply discount code",
-    "unknown_error": "An unknown error occurred"
+    "unknown_error": "An unknown error occurred",
+    "try_again": "Please try again later",
+    "empty_code": "Enter a discount code",
+    "code_exists": "This code already exists",
+    "copy_failed": "Could not copy"
   }
 }
