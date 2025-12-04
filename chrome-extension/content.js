@@ -1,4 +1,4 @@
-// Clipp Enhanced Content Script - Injected into store pages
+// Clipp Enhanced Content Script v1.1 - With Automatic Coupon Testing
 class ClippContentScript {
   constructor() {
     this.currentStore = null;
@@ -6,19 +6,25 @@ class ClippContentScript {
     this.isProcessing = false;
     this.isVisible = false;
     this.couponsCache = [];
-    this.statisticsService = null;
+    this.couponTester = null;
+    this.isOnCheckout = false;
+    this.autoTestEnabled = true;
     
-    // Initialize content script
     this.init();
   }
 
   async init() {
-    console.log('[ClippContent] Initializing content script');
+    console.log('[ClippContent] Initializing content script v1.1');
+    
+    // Initialize coupon tester
+    if (typeof CouponTester !== 'undefined') {
+      this.couponTester = new CouponTester();
+    }
     
     // Listen for messages from background script
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       this.handleMessage(request, sender, sendResponse);
-      return true; // Keep message channel open
+      return true;
     });
 
     // Check if page is already loaded
@@ -30,21 +36,51 @@ class ClippContentScript {
   }
 
   onPageReady() {
-    console.log('[ClippContent] Page ready, waiting for store detection');
-    // The background script will send initializeClipp message when store is detected
+    console.log('[ClippContent] Page ready');
+    
+    // Check if we're on a checkout page
+    this.isOnCheckout = this.checkIfCheckoutPage();
+    
+    if (this.isOnCheckout) {
+      console.log('[ClippContent] Checkout page detected');
+    }
+  }
+
+  checkIfCheckoutPage() {
+    const url = window.location.href.toLowerCase();
+    const pathname = window.location.pathname.toLowerCase();
+    
+    const checkoutTerms = [
+      'checkout', 'cart', 'varukorg', 'kassa', 'payment', 
+      'betalning', 'order', 'bestall', 'confirm', 'bekrafta'
+    ];
+    
+    return checkoutTerms.some(term => 
+      url.includes(term) || pathname.includes(term)
+    );
   }
 
   async handleMessage(request, sender, sendResponse) {
     try {
       switch (request.action) {
         case 'initializeClipp':
-          await this.initializeForStore(request.store);
+          await this.initializeForStore(request.store, request.isCheckout);
+          sendResponse({ success: true });
+          break;
+          
+        case 'couponsFound':
+          this.handleCouponsFound(request.coupons, request.count);
           sendResponse({ success: true });
           break;
           
         case 'applyCouponToPage':
-          const result = await this.applyCouponToPage(request.code, request.store);
-          sendResponse(result);
+          const applyResult = await this.applyCouponToPage(request.code, request.store);
+          sendResponse(applyResult);
+          break;
+          
+        case 'testCouponOnPage':
+          const testResult = await this.testCouponOnPage(request.code, request.store);
+          sendResponse(testResult);
           break;
           
         case 'showCouponsFound':
@@ -67,50 +103,59 @@ class ClippContentScript {
     }
   }
 
-  // Initialize Clipp interface for detected store
-  async initializeForStore(store) {
+  // Handle coupons found from background
+  handleCouponsFound(coupons, count) {
+    this.couponsCache = coupons || [];
+    
+    if (count > 0) {
+      this.showNotificationBadge();
+      
+      // If on checkout and auto-test enabled, start testing
+      if (this.isOnCheckout && this.autoTestEnabled && this.couponTester) {
+        setTimeout(() => {
+          this.startAutomaticCouponTesting();
+        }, 2000);
+      }
+    }
+  }
+
+  // Initialize for detected store
+  async initializeForStore(store, isCheckout = false) {
     if (this.clippInterface || !store) return;
     
-    console.log(`[ClippContent] Initializing Clipp for ${store.storeName}`);
+    console.log(`[ClippContent] Initializing for ${store.storeName}`);
     this.currentStore = store;
+    this.isOnCheckout = isCheckout || this.checkIfCheckoutPage();
     
     try {
       await this.createClippInterface();
       await this.loadAndDisplayStats();
       
-      // Auto-scan for coupons after short delay
+      // Auto-scan for coupons
       setTimeout(() => {
         this.startAutomaticCouponScan();
       }, 2000);
       
     } catch (error) {
-      console.error('[ClippContent] Error initializing for store:', error);
+      console.error('[ClippContent] Error initializing:', error);
     }
   }
 
-  // Create floating Clipp interface
+  // Create floating interface
   async createClippInterface() {
-    // Remove existing interface if any
     this.removeInterface();
     
-    // Create main interface container
     this.clippInterface = document.createElement('div');
     this.clippInterface.id = 'clipp-interface';
     this.clippInterface.innerHTML = this.getInterfaceHTML();
     
-    // Add to page
     document.body.appendChild(this.clippInterface);
-    
-    // Apply styles
     this.injectStyles();
-    
-    // Set up event listeners
     this.setupEventListeners();
     
-    console.log('[ClippContent] Clipp interface created');
+    console.log('[ClippContent] Interface created');
   }
 
-  // Get HTML for the Clipp interface
   getInterfaceHTML() {
     const iconUrl = chrome.runtime.getURL('icons/icon32.png');
     
@@ -133,6 +178,28 @@ class ClippContentScript {
           </div>
           
           <div class="clipp-popup-body">
+            <!-- Auto-Test Banner (shown on checkout) -->
+            <div class="clipp-auto-test-banner" id="clipp-auto-test-banner" style="display: none;">
+              <div class="clipp-auto-test-icon">🔄</div>
+              <div class="clipp-auto-test-info">
+                <h4 id="clipp-test-title">Automatisk kodtestning</h4>
+                <p id="clipp-test-status">Testar rabattkoder...</p>
+              </div>
+              <div class="clipp-auto-test-progress">
+                <div class="clipp-progress-bar" id="clipp-progress-bar"></div>
+              </div>
+            </div>
+            
+            <!-- Best Code Found -->
+            <div class="clipp-best-code-section" id="clipp-best-code-section" style="display: none;">
+              <div class="clipp-best-code-badge">⭐ Bästa koden</div>
+              <div class="clipp-best-code-content">
+                <span class="clipp-best-code" id="clipp-best-code">SAVE20</span>
+                <span class="clipp-best-savings" id="clipp-best-savings">Sparar 150 kr</span>
+              </div>
+              <button class="clipp-apply-best-btn" id="clipp-apply-best-btn">Använd</button>
+            </div>
+            
             <!-- Status Section -->
             <div class="clipp-status-section" id="clipp-status-section">
               <div class="clipp-status-content" id="clipp-status-content">
@@ -169,9 +236,16 @@ class ClippContentScript {
                 </div>
               </div>
               
-              <button class="clipp-scan-btn" id="clipp-scan-btn">
-                <span id="clipp-scan-text">Sök rabattkoder</span>
-              </button>
+              <div class="clipp-action-buttons">
+                <button class="clipp-scan-btn" id="clipp-scan-btn">
+                  <span id="clipp-scan-text">Sök rabattkoder</span>
+                </button>
+                ${this.isOnCheckout ? `
+                <button class="clipp-test-btn" id="clipp-test-all-btn" style="display: none;">
+                  <span>🧪 Testa alla koder</span>
+                </button>
+                ` : ''}
+              </div>
             </div>
             
             <!-- Coupons Section -->
@@ -208,7 +282,6 @@ class ClippContentScript {
     `;
   }
 
-  // Inject CSS styles for the interface
   injectStyles() {
     if (document.getElementById('clipp-content-styles')) return;
     
@@ -218,10 +291,8 @@ class ClippContentScript {
     document.head.appendChild(styleSheet);
   }
 
-  // Get CSS for the Clipp interface
   getInterfaceCSS() {
     return `
-      /* Clipp Content Script Styles */
       #clipp-interface {
         position: fixed;
         top: 0;
@@ -241,7 +312,6 @@ class ClippContentScript {
         padding: 0;
       }
       
-      /* Floating Button */
       .clipp-floating-button {
         position: fixed;
         top: 50%;
@@ -275,25 +345,25 @@ class ClippContentScript {
         position: absolute;
         top: -4px;
         right: -4px;
-        width: 20px;
+        min-width: 20px;
         height: 20px;
-        background: #ef4444;
+        background: #22c55e;
         color: white;
-        border-radius: 50%;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 700;
+        padding: 0 5px;
         animation: clipp-pulse 2s infinite;
       }
       
       @keyframes clipp-pulse {
         0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.2); }
+        50% { transform: scale(1.15); }
       }
       
-      /* Popup Overlay */
       .clipp-popup-overlay {
         position: fixed;
         top: 0;
@@ -320,17 +390,10 @@ class ClippContentScript {
       }
       
       @keyframes clipp-popup-in {
-        from {
-          opacity: 0;
-          transform: scale(0.9) translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: scale(1) translateY(0);
-        }
+        from { opacity: 0; transform: scale(0.9) translateY(20px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
       }
       
-      /* Popup Header */
       .clipp-popup-header {
         display: flex;
         align-items: center;
@@ -374,21 +437,129 @@ class ClippContentScript {
         transition: background 0.2s ease;
       }
       
-      .clipp-close-btn:hover {
-        background: rgba(255, 255, 255, 0.3);
-      }
+      .clipp-close-btn:hover { background: rgba(255, 255, 255, 0.3); }
       
-      /* Popup Body */
       .clipp-popup-body {
         padding: 20px;
         max-height: 60vh;
         overflow-y: auto;
       }
       
-      /* Status Section */
-      .clipp-status-section {
-        margin-bottom: 20px;
+      /* Auto-Test Banner */
+      .clipp-auto-test-banner {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border: 1px solid #f59e0b;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
       }
+      
+      .clipp-auto-test-banner > div:first-child {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      
+      .clipp-auto-test-icon {
+        font-size: 24px;
+        animation: clipp-spin 1s linear infinite;
+      }
+      
+      @keyframes clipp-spin {
+        to { transform: rotate(360deg); }
+      }
+      
+      .clipp-auto-test-info h4 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #92400e;
+        margin: 0 0 2px 0;
+      }
+      
+      .clipp-auto-test-info p {
+        font-size: 12px;
+        color: #b45309;
+        margin: 0;
+      }
+      
+      .clipp-auto-test-progress {
+        height: 6px;
+        background: rgba(0,0,0,0.1);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      
+      .clipp-progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #f59e0b, #d97706);
+        border-radius: 3px;
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+      
+      /* Best Code Section */
+      .clipp-best-code-section {
+        background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+        border: 2px solid #22c55e;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      
+      .clipp-best-code-badge {
+        font-size: 11px;
+        font-weight: 700;
+        color: #166534;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      .clipp-best-code-content {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      
+      .clipp-best-code {
+        font-family: 'Monaco', 'Menlo', monospace;
+        font-size: 20px;
+        font-weight: 700;
+        color: #166534;
+      }
+      
+      .clipp-best-savings {
+        font-size: 14px;
+        color: #15803d;
+        font-weight: 500;
+      }
+      
+      .clipp-apply-best-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        color: white;
+        border: none;
+        padding: 14px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+      }
+      
+      .clipp-apply-best-btn:hover {
+        background: linear-gradient(135deg, #16a34a, #15803d);
+        transform: translateY(-2px);
+      }
+      
+      /* Status Section */
+      .clipp-status-section { margin-bottom: 20px; }
       
       .clipp-status-content {
         background: #f8faff;
@@ -432,8 +603,13 @@ class ClippContentScript {
         margin: 0;
       }
       
-      .clipp-scan-btn {
-        width: 100%;
+      .clipp-action-buttons {
+        display: flex;
+        gap: 8px;
+      }
+      
+      .clipp-scan-btn, .clipp-test-btn {
+        flex: 1;
         background: linear-gradient(135deg, #3b82f6, #2563eb);
         color: white;
         border: none;
@@ -445,20 +621,22 @@ class ClippContentScript {
         transition: all 0.2s ease;
       }
       
-      .clipp-scan-btn:hover:not(:disabled) {
-        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      .clipp-test-btn {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+      }
+      
+      .clipp-scan-btn:hover:not(:disabled),
+      .clipp-test-btn:hover:not(:disabled) {
         transform: translateY(-1px);
       }
       
-      .clipp-scan-btn:disabled {
+      .clipp-scan-btn:disabled, .clipp-test-btn:disabled {
         opacity: 0.7;
         cursor: not-allowed;
       }
       
       /* Coupons Section */
-      .clipp-coupons-section {
-        margin-bottom: 20px;
-      }
+      .clipp-coupons-section { margin-bottom: 20px; }
       
       .clipp-coupons-section h4 {
         font-size: 14px;
@@ -488,9 +666,18 @@ class ClippContentScript {
         background: linear-gradient(135deg, #e0f2fe, #bae6fd);
       }
       
-      .clipp-coupon-info {
-        flex: 1;
+      .clipp-coupon-item.tested-success {
+        border-color: #22c55e;
+        background: linear-gradient(135deg, #dcfce7, #bbf7d0);
       }
+      
+      .clipp-coupon-item.tested-failed {
+        border-color: #ef4444;
+        background: linear-gradient(135deg, #fef2f2, #fee2e2);
+        opacity: 0.7;
+      }
+      
+      .clipp-coupon-info { flex: 1; }
       
       .clipp-coupon-code {
         font-family: 'Monaco', 'Menlo', monospace;
@@ -510,6 +697,23 @@ class ClippContentScript {
         margin-top: 2px;
       }
       
+      .clipp-coupon-test-result {
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        margin-left: 8px;
+      }
+      
+      .clipp-coupon-test-result.success {
+        background: #22c55e;
+        color: white;
+      }
+      
+      .clipp-coupon-test-result.failed {
+        background: #ef4444;
+        color: white;
+      }
+      
       .clipp-coupon-apply {
         background: linear-gradient(135deg, #3b82f6, #2563eb);
         color: white;
@@ -527,27 +731,13 @@ class ClippContentScript {
         background: linear-gradient(135deg, #2563eb, #1d4ed8);
       }
       
-      .clipp-coupon-apply:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-      }
-      
-      .clipp-coupon-apply.clipp-applying {
-        background: linear-gradient(135deg, #f59e0b, #d97706);
-      }
-      
-      .clipp-coupon-apply.clipp-success {
-        background: linear-gradient(135deg, #10b981, #059669);
-      }
-      
-      .clipp-coupon-apply.clipp-failed {
-        background: linear-gradient(135deg, #ef4444, #dc2626);
-      }
+      .clipp-coupon-apply:disabled { opacity: 0.7; cursor: not-allowed; }
+      .clipp-coupon-apply.clipp-applying { background: linear-gradient(135deg, #f59e0b, #d97706); }
+      .clipp-coupon-apply.clipp-success { background: linear-gradient(135deg, #10b981, #059669); }
+      .clipp-coupon-apply.clipp-failed { background: linear-gradient(135deg, #ef4444, #dc2626); }
       
       /* Store Section */
-      .clipp-store-section {
-        margin-bottom: 20px;
-      }
+      .clipp-store-section { margin-bottom: 20px; }
       
       .clipp-store-btn {
         width: 100%;
@@ -570,12 +760,9 @@ class ClippContentScript {
       .clipp-store-btn:hover {
         background: linear-gradient(135deg, #059669, #047857);
         transform: translateY(-1px);
-        box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
       }
       
-      .clipp-store-icon {
-        font-size: 16px;
-      }
+      .clipp-store-icon { font-size: 16px; }
       
       /* Statistics Section */
       .clipp-stats-section h4 {
@@ -614,7 +801,6 @@ class ClippContentScript {
         color: #059669;
       }
       
-      /* Spinner */
       .clipp-spinner {
         width: 24px;
         height: 24px;
@@ -624,101 +810,62 @@ class ClippContentScript {
         animation: clipp-spin 1s linear infinite;
       }
       
-      @keyframes clipp-spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-      
-      /* Mobile responsiveness */
       @media (max-width: 480px) {
         .clipp-floating-button {
           right: 16px;
           width: 48px;
           height: 48px;
         }
-        
-        .clipp-button-icon {
-          width: 24px;
-          height: 24px;
-        }
-        
-        .clipp-popup-content {
-          width: 95vw;
-          margin: 20px;
-        }
-        
-        .clipp-popup-header,
-        .clipp-popup-body {
-          padding: 16px;
-        }
+        .clipp-button-icon { width: 24px; height: 24px; }
+        .clipp-popup-content { width: 95vw; margin: 20px; }
+        .clipp-popup-header, .clipp-popup-body { padding: 16px; }
       }
     `;
   }
 
-  // Set up event listeners for interface
   setupEventListeners() {
-    // Toggle button
-    const toggleBtn = document.getElementById('clipp-toggle');
-    if (toggleBtn) {
-      toggleBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        this.togglePopup();
-      });
-    }
+    document.getElementById('clipp-toggle')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.togglePopup();
+    });
 
-    // Close button
-    const closeBtn = document.getElementById('clipp-close');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        this.hidePopup();
-      });
-    }
-
-    // Overlay click to close
-    const overlay = document.getElementById('clipp-popup');
-    if (overlay) {
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-          this.hidePopup();
-        }
-      });
-    }
-
-    // Scan button
-    const scanBtn = document.getElementById('clipp-scan-btn');
-    if (scanBtn) {
-      scanBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.startManualCouponScan();
-      });
-    }
-
-    // Store button
-    const storeBtn = document.getElementById('clipp-store-btn');
-    if (storeBtn) {
-      storeBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.visitStore();
-      });
-    }
-  }
-
-  // Toggle popup visibility
-  togglePopup() {
-    const popup = document.getElementById('clipp-popup');
-    if (!popup) return;
-
-    if (this.isVisible) {
+    document.getElementById('clipp-close')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       this.hidePopup();
-    } else {
-      this.showPopup();
-    }
+    });
+
+    document.getElementById('clipp-popup')?.addEventListener('click', (e) => {
+      if (e.target.id === 'clipp-popup') this.hidePopup();
+    });
+
+    document.getElementById('clipp-scan-btn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.startManualCouponScan();
+    });
+
+    document.getElementById('clipp-test-all-btn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.startAutomaticCouponTesting();
+    });
+
+    document.getElementById('clipp-store-btn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.visitStore();
+    });
+
+    document.getElementById('clipp-apply-best-btn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.applyBestCode();
+    });
   }
 
-  // Show popup
+  togglePopup() {
+    if (this.isVisible) this.hidePopup();
+    else this.showPopup();
+  }
+
   showPopup() {
     const popup = document.getElementById('clipp-popup');
     const notification = document.getElementById('clipp-notification');
@@ -726,37 +873,151 @@ class ClippContentScript {
     if (popup) {
       popup.style.display = 'flex';
       this.isVisible = true;
-      
-      // Hide notification badge
-      if (notification) {
-        notification.style.display = 'none';
-      }
+      if (notification) notification.style.display = 'none';
     }
   }
 
-  // Hide popup
   hidePopup() {
     const popup = document.getElementById('clipp-popup');
-    
     if (popup) {
       popup.style.display = 'none';
       this.isVisible = false;
     }
   }
 
-  // Start automatic coupon scanning
+  showNotificationBadge() {
+    const notification = document.getElementById('clipp-notification');
+    if (notification && this.couponsCache.length > 0) {
+      notification.textContent = this.couponsCache.length;
+      notification.style.display = 'flex';
+    }
+  }
+
+  // ==================== AUTOMATIC COUPON TESTING ====================
+
+  async startAutomaticCouponTesting() {
+    if (!this.couponTester || this.couponsCache.length === 0) {
+      console.log('[ClippContent] No coupons to test or tester not available');
+      return;
+    }
+
+    console.log('[ClippContent] Starting automatic coupon testing');
+    
+    // Show testing banner
+    const banner = document.getElementById('clipp-auto-test-banner');
+    const testAllBtn = document.getElementById('clipp-test-all-btn');
+    if (banner) banner.style.display = 'block';
+    if (testAllBtn) testAllBtn.style.display = 'none';
+
+    try {
+      const result = await this.couponTester.testMultipleCoupons(
+        this.couponsCache,
+        this.currentStore,
+        (progress) => this.updateTestProgress(progress)
+      );
+
+      if (result.bestResult) {
+        this.showBestCodeFound(result.bestResult);
+      }
+
+      // Update coupon list with test results
+      this.updateCouponsWithTestResults(result.results);
+
+    } catch (error) {
+      console.error('[ClippContent] Error during automatic testing:', error);
+    } finally {
+      if (banner) banner.style.display = 'none';
+    }
+  }
+
+  updateTestProgress(progress) {
+    const statusEl = document.getElementById('clipp-test-status');
+    const progressBar = document.getElementById('clipp-progress-bar');
+    
+    if (statusEl) {
+      statusEl.textContent = `Testar ${progress.code}... (${progress.current}/${progress.total})`;
+    }
+    
+    if (progressBar) {
+      const percent = (progress.current / progress.total) * 100;
+      progressBar.style.width = `${percent}%`;
+    }
+  }
+
+  showBestCodeFound(bestResult) {
+    const section = document.getElementById('clipp-best-code-section');
+    const codeEl = document.getElementById('clipp-best-code');
+    const savingsEl = document.getElementById('clipp-best-savings');
+    
+    if (section && codeEl && savingsEl) {
+      codeEl.textContent = bestResult.code;
+      savingsEl.textContent = bestResult.savings > 0 
+        ? `Sparar ${Math.round(bestResult.savings)} kr`
+        : 'Rabattkod fungerar!';
+      section.style.display = 'block';
+      
+      // Store best code for apply button
+      section.dataset.code = bestResult.code;
+    }
+  }
+
+  applyBestCode() {
+    const section = document.getElementById('clipp-best-code-section');
+    const code = section?.dataset.code;
+    
+    if (code) {
+      const coupon = this.couponsCache.find(c => c.code === code) || { code };
+      this.applyCouponToPage(code, this.currentStore);
+    }
+  }
+
+  updateCouponsWithTestResults(results) {
+    const couponsList = document.getElementById('clipp-coupons-list');
+    if (!couponsList) return;
+
+    results.forEach(result => {
+      const item = couponsList.querySelector(`[data-code="${result.code}"]`);
+      if (item) {
+        item.classList.remove('tested-success', 'tested-failed');
+        item.classList.add(result.success ? 'tested-success' : 'tested-failed');
+        
+        // Add result badge
+        let badge = item.querySelector('.clipp-coupon-test-result');
+        if (!badge) {
+          badge = document.createElement('span');
+          badge.className = 'clipp-coupon-test-result';
+          item.querySelector('.clipp-coupon-info')?.appendChild(badge);
+        }
+        
+        badge.className = `clipp-coupon-test-result ${result.success ? 'success' : 'failed'}`;
+        badge.textContent = result.success 
+          ? (result.savings > 0 ? `✓ -${Math.round(result.savings)} kr` : '✓ Fungerar')
+          : '✗ Fungerar inte';
+      }
+    });
+  }
+
+  // Test a single coupon on page
+  async testCouponOnPage(code, store) {
+    if (!this.couponTester) {
+      return { success: false, error: 'Coupon tester not available' };
+    }
+    
+    return await this.couponTester.testCoupon(code, store);
+  }
+
+  // ==================== EXISTING METHODS ====================
+
   async startAutomaticCouponScan() {
     console.log('[ClippContent] Starting automatic coupon scan');
     await this.performCouponScan(true);
   }
 
-  // Start manual coupon scanning (user clicked button)
   async startManualCouponScan() {
     console.log('[ClippContent] Starting manual coupon scan');
     await this.performCouponScan(false);
   }
 
-  // Perform coupon scanning
   async performCouponScan(isAutomatic = false) {
     if (this.isProcessing || !this.currentStore) return;
 
@@ -764,494 +1025,230 @@ class ClippContentScript {
     this.showScanningState();
 
     try {
-      // Request coupons from background script
       const response = await chrome.runtime.sendMessage({
         action: 'findCoupons',
         store: this.currentStore
       });
 
-      if (response && response.success && response.coupons && response.coupons.length > 0) {
+      if (response?.success && response?.coupons?.length > 0) {
         this.couponsCache = response.coupons;
         this.showCouponsFoundState(response.coupons);
         
-        // Show notification for automatic scans
         if (isAutomatic) {
           this.showNotificationBadge();
         }
         
-        console.log(`[ClippContent] Found ${response.coupons.length} coupons`);
+        // Show test button if on checkout
+        if (this.isOnCheckout) {
+          const testBtn = document.getElementById('clipp-test-all-btn');
+          if (testBtn) testBtn.style.display = 'block';
+        }
+        
       } else {
         this.showNoCouponsState();
-        console.log('[ClippContent] No coupons found');
       }
     } catch (error) {
-      console.error('[ClippContent] Error scanning for coupons:', error);
+      console.error('[ClippContent] Error scanning:', error);
       this.showErrorState();
     } finally {
       this.isProcessing = false;
     }
   }
 
-  // Show scanning state
   showScanningState() {
     this.hideAllStatusStates();
-    const scanningEl = document.getElementById('clipp-status-scanning');
-    const scanBtn = document.getElementById('clipp-scan-btn');
-    
-    if (scanningEl) scanningEl.style.display = 'flex';
-    if (scanBtn) {
-      scanBtn.disabled = true;
-      document.getElementById('clipp-scan-text').textContent = 'Söker...';
+    const el = document.getElementById('clipp-status-scanning');
+    const btn = document.getElementById('clipp-scan-btn');
+    if (el) el.style.display = 'flex';
+    if (btn) {
+      btn.disabled = true;
+      btn.querySelector('span').textContent = 'Söker...';
     }
   }
 
-  // Show coupons found state
   showCouponsFoundState(coupons) {
     this.hideAllStatusStates();
-    const foundEl = document.getElementById('clipp-status-found');
+    const el = document.getElementById('clipp-status-found');
     const countEl = document.getElementById('clipp-found-count');
-    const scanBtn = document.getElementById('clipp-scan-btn');
-    const couponsSection = document.getElementById('clipp-coupons-section');
+    const btn = document.getElementById('clipp-scan-btn');
+    const section = document.getElementById('clipp-coupons-section');
     
-    if (foundEl) foundEl.style.display = 'flex';
-    if (countEl) countEl.textContent = `${coupons.length} koder tillgängliga`;
-    if (scanBtn) {
-      scanBtn.disabled = false;
-      document.getElementById('clipp-scan-text').textContent = 'Sök igen';
+    if (el) el.style.display = 'flex';
+    if (countEl) countEl.textContent = `${coupons.length} kod${coupons.length > 1 ? 'er' : ''} tillgänglig${coupons.length > 1 ? 'a' : ''}`;
+    if (btn) {
+      btn.disabled = false;
+      btn.querySelector('span').textContent = 'Sök igen';
     }
-    if (couponsSection) {
-      couponsSection.style.display = 'block';
-      this.renderCoupons(coupons);
-    }
+    if (section) section.style.display = 'block';
+    
+    this.renderCoupons(coupons);
   }
 
-  // Show no coupons state
   showNoCouponsState() {
     this.hideAllStatusStates();
-    const emptyEl = document.getElementById('clipp-status-empty');
-    const scanBtn = document.getElementById('clipp-scan-btn');
-    const couponsSection = document.getElementById('clipp-coupons-section');
-    
-    if (emptyEl) emptyEl.style.display = 'flex';
-    if (scanBtn) {
-      scanBtn.disabled = false;
-      document.getElementById('clipp-scan-text').textContent = 'Sök igen';
+    const el = document.getElementById('clipp-status-empty');
+    const btn = document.getElementById('clipp-scan-btn');
+    if (el) el.style.display = 'flex';
+    if (btn) {
+      btn.disabled = false;
+      btn.querySelector('span').textContent = 'Sök igen';
     }
-    if (couponsSection) couponsSection.style.display = 'none';
   }
 
-  // Show error state
   showErrorState() {
     this.hideAllStatusStates();
-    const idleEl = document.getElementById('clipp-status-idle');
-    const scanBtn = document.getElementById('clipp-scan-btn');
-    
-    if (idleEl) {
-      idleEl.style.display = 'flex';
-      const textEl = idleEl.querySelector('.clipp-status-text h4');
-      if (textEl) textEl.textContent = 'Ett fel inträffade';
-    }
-    if (scanBtn) {
-      scanBtn.disabled = false;
-      document.getElementById('clipp-scan-text').textContent = 'Försök igen';
+    const el = document.getElementById('clipp-status-empty');
+    const btn = document.getElementById('clipp-scan-btn');
+    if (el) el.style.display = 'flex';
+    if (btn) {
+      btn.disabled = false;
+      btn.querySelector('span').textContent = 'Försök igen';
     }
   }
 
-  // Hide all status states
   hideAllStatusStates() {
-    const states = ['clipp-status-idle', 'clipp-status-scanning', 'clipp-status-found', 'clipp-status-empty'];
-    states.forEach(id => {
-      const el = document.getElementById(id);
+    ['idle', 'scanning', 'found', 'empty'].forEach(state => {
+      const el = document.getElementById(`clipp-status-${state}`);
       if (el) el.style.display = 'none';
     });
   }
 
-  // Show notification badge
-  showNotificationBadge() {
-    const notification = document.getElementById('clipp-notification');
-    if (notification) {
-      notification.style.display = 'flex';
-    }
-  }
-
-  // Render coupons in the list
   renderCoupons(coupons) {
-    const couponsList = document.getElementById('clipp-coupons-list');
-    if (!couponsList || !coupons) return;
+    const list = document.getElementById('clipp-coupons-list');
+    if (!list) return;
 
-    couponsList.innerHTML = '';
+    list.innerHTML = '';
     
     coupons.forEach((coupon, index) => {
-      const couponItem = document.createElement('div');
-      couponItem.className = 'clipp-coupon-item';
-      couponItem.setAttribute('data-coupon-index', index);
+      const item = document.createElement('div');
+      item.className = 'clipp-coupon-item';
+      item.setAttribute('data-code', coupon.code);
       
-      const verifiedBadge = coupon.verified ? ' ✓' : '';
-      
-      couponItem.innerHTML = `
+      item.innerHTML = `
         <div class="clipp-coupon-info">
-          <span class="clipp-coupon-code">${coupon.code}${verifiedBadge}</span>
-          <span class="clipp-coupon-desc">${coupon.description}</span>
+          <span class="clipp-coupon-code">${coupon.code}</span>
+          <span class="clipp-coupon-desc">${coupon.description || ''}</span>
         </div>
-        <button class="clipp-coupon-apply" data-code="${coupon.code}">
-          Använd
-        </button>
+        <button class="clipp-coupon-apply" data-code="${coupon.code}">Använd</button>
       `;
       
-      // Add click handler for apply button
-      const applyBtn = couponItem.querySelector('.clipp-coupon-apply');
-      applyBtn.addEventListener('click', (e) => {
+      item.querySelector('.clipp-coupon-apply')?.addEventListener('click', (e) => {
         e.preventDefault();
-        this.applyCoupon(coupon, applyBtn);
+        this.applyCouponToPage(coupon.code, this.currentStore, e.target);
       });
       
-      couponsList.appendChild(couponItem);
+      list.appendChild(item);
     });
   }
 
-  // Apply coupon to the page
-  async applyCoupon(coupon, buttonEl) {
-    if (!coupon || !buttonEl) return;
+  async applyCouponToPage(code, store, buttonEl = null) {
+    console.log(`[ClippContent] Applying coupon: ${code}`);
     
-    try {
-      // Update button state
+    if (buttonEl) {
       buttonEl.classList.add('clipp-applying');
       buttonEl.disabled = true;
       buttonEl.textContent = 'Applicerar...';
-      
-      // Apply the coupon
-      const result = await this.applyCouponToPage(coupon.code, this.currentStore);
-      
-      if (result && result.success) {
-        // Success state
-        buttonEl.classList.remove('clipp-applying');
-        buttonEl.classList.add('clipp-success');
-        buttonEl.textContent = '✅ Tillagd!';
+    }
+
+    try {
+      // Try to use coupon tester to apply
+      if (this.couponTester) {
+        const result = await this.couponTester.testCoupon(code, store);
         
-        // Record success if savings were reported
-        if (result.savings && result.savings > 0) {
-          await this.recordCouponSuccess(coupon, result.savings);
-          await this.loadAndDisplayStats();
+        if (buttonEl) {
+          buttonEl.classList.remove('clipp-applying');
+          if (result.success) {
+            buttonEl.classList.add('clipp-success');
+            buttonEl.textContent = 'Tillagd!';
+          } else {
+            buttonEl.classList.add('clipp-failed');
+            buttonEl.textContent = 'Misslyckades';
+            setTimeout(() => {
+              buttonEl.classList.remove('clipp-failed');
+              buttonEl.disabled = false;
+              buttonEl.textContent = 'Använd';
+            }, 2000);
+          }
         }
         
-      } else {
-        // Failure state
-        buttonEl.classList.remove('clipp-applying');
-        buttonEl.classList.add('clipp-failed');
-        buttonEl.textContent = '❌ Fungerar inte';
-        
-        // Re-enable after delay
-        setTimeout(() => {
-          buttonEl.classList.remove('clipp-failed');
-          buttonEl.disabled = false;
-          buttonEl.textContent = 'Försök igen';
-        }, 3000);
+        return result;
       }
+      
+      // Fallback: copy to clipboard
+      await navigator.clipboard.writeText(code);
+      
+      if (buttonEl) {
+        buttonEl.classList.remove('clipp-applying');
+        buttonEl.classList.add('clipp-success');
+        buttonEl.textContent = 'Kopierad!';
+      }
+      
+      return { success: true, copied: true };
       
     } catch (error) {
       console.error('[ClippContent] Error applying coupon:', error);
       
-      // Error state
-      buttonEl.classList.remove('clipp-applying');
-      buttonEl.classList.add('clipp-failed');
-      buttonEl.textContent = '❌ Fel';
-      buttonEl.disabled = false;
-    }
-  }
-
-  // Apply coupon code to the actual page
-  async applyCouponToPage(code, store) {
-    try {
-      console.log(`[ClippContent] Applying coupon ${code} to page`);
-      
-      // Find coupon input field using store selectors or common patterns
-      const couponInput = this.findCouponInput(store);
-      
-      if (!couponInput) {
-        console.warn('[ClippContent] Coupon input not found');
-        return { success: false, error: 'Coupon input not found' };
+      if (buttonEl) {
+        buttonEl.classList.remove('clipp-applying');
+        buttonEl.classList.add('clipp-failed');
+        buttonEl.textContent = 'Fel';
+        setTimeout(() => {
+          buttonEl.classList.remove('clipp-failed');
+          buttonEl.disabled = false;
+          buttonEl.textContent = 'Använd';
+        }, 2000);
       }
       
-      // Clear existing value and set new coupon code
-      couponInput.value = '';
-      couponInput.focus();
-      
-      // Simulate typing the coupon code
-      for (let char of code) {
-        couponInput.value += char;
-        couponInput.dispatchEvent(new Event('input', { bubbles: true }));
-        await new Promise(resolve => setTimeout(resolve, 50)); // Small delay between characters
-      }
-      
-      // Trigger change events
-      couponInput.dispatchEvent(new Event('change', { bubbles: true }));
-      couponInput.dispatchEvent(new Event('blur', { bubbles: true }));
-      
-      // Try to find and click apply button
-      const applyButton = this.findApplyButton(store);
-      if (applyButton) {
-        console.log('[ClippContent] Clicking apply button');
-        applyButton.click();
-        
-        // Wait for potential page updates
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Check if coupon was successfully applied
-        const success = this.checkCouponSuccess();
-        const savings = success ? this.extractSavingsAmount() : 0;
-        
-        return { 
-          success: success,
-          savings: savings,
-          message: success ? 'Coupon applied successfully' : 'Coupon application failed'
-        };
-      } else {
-        console.warn('[ClippContent] Apply button not found');
-        // Coupon is filled but not applied automatically
-        return { 
-          success: true, 
-          savings: 0,
-          message: 'Coupon code filled, please apply manually'
-        };
-      }
-      
-    } catch (error) {
-      console.error('[ClippContent] Error applying coupon to page:', error);
       return { success: false, error: error.message };
     }
   }
 
-  // Find coupon input field
-  findCouponInput(store) {
-    // Try store-specific selectors first
-    if (store && store.couponInputSelectors) {
-      const storeInput = document.querySelector(store.couponInputSelectors);
-      if (storeInput) return storeInput;
-    }
-    
-    // Common coupon input patterns
-    const commonSelectors = [
-      'input[name*="coupon" i]',
-      'input[name*="promo" i]',
-      'input[name*="discount" i]',
-      'input[name*="voucher" i]',
-      'input[id*="coupon" i]',
-      'input[id*="promo" i]',
-      'input[id*="discount" i]',
-      'input[id*="voucher" i]',
-      'input[class*="coupon" i]',
-      'input[class*="promo" i]',
-      'input[class*="discount" i]',
-      'input[class*="voucher" i]',
-      'input[placeholder*="coupon" i]',
-      'input[placeholder*="promo" i]',
-      'input[placeholder*="rabatt" i]',
-      'input[data-testid*="coupon" i]',
-      'input[data-testid*="promo" i]',
-    ];
-    
-    for (const selector of commonSelectors) {
-      const input = document.querySelector(selector);
-      if (input && input.type === 'text') {
-        return input;
-      }
-    }
-    
-    return null;
-  }
-
-  // Find apply button
-  findApplyButton(store) {
-    // Try store-specific selectors first
-    if (store && store.applyButtonSelectors) {
-      const storeButton = document.querySelector(store.applyButtonSelectors);
-      if (storeButton) return storeButton;
-    }
-    
-    // Common apply button patterns
-    const commonSelectors = [
-      'button[data-testid*="apply" i]',
-      'button[data-testid*="coupon" i]',
-      'button:contains("Använd")',
-      'button:contains("Apply")',
-      'button:contains("Tillämpa")',
-      'button[type="submit"]',
-      '.apply-coupon',
-      '.coupon-apply',
-      '.promo-apply',
-      '.discount-apply'
-    ];
-    
-    for (const selector of commonSelectors) {
-      const button = document.querySelector(selector);
-      if (button && !button.disabled) {
-        return button;
-      }
-    }
-    
-    // Look for buttons near coupon input
-    const couponInput = this.findCouponInput(store);
-    if (couponInput) {
-      const parent = couponInput.closest('form, .coupon-section, .promo-section, .discount-section');
-      if (parent) {
-        const button = parent.querySelector('button[type="submit"], button:not([type])');
-        if (button) return button;
-      }
-    }
-    
-    return null;
-  }
-
-  // Check if coupon was successfully applied
-  checkCouponSuccess() {
-    // Look for success indicators
-    const successIndicators = [
-      '.coupon-success',
-      '.promo-success',
-      '.discount-applied',
-      '[class*="success" i]',
-      '[data-testid*="success" i]'
-    ];
-    
-    for (const selector of successIndicators) {
-      if (document.querySelector(selector)) {
-        return true;
-      }
-    }
-    
-    // Look for price changes or discount amounts
-    const discountElements = document.querySelectorAll('[class*="discount" i], [class*="saving" i], [class*="rabatt" i]');
-    if (discountElements.length > 0) {
-      return true;
-    }
-    
-    // Default to 70% success rate for demonstration
-    return Math.random() > 0.3;
-  }
-
-  // Extract savings amount from page
-  extractSavingsAmount() {
+  async loadAndDisplayStats() {
     try {
-      // Look for discount/savings amounts on the page
-      const amountElements = document.querySelectorAll('[class*="discount" i], [class*="saving" i], [class*="rabatt" i]');
+      const stats = await chrome.runtime.sendMessage({ action: 'getStats' });
       
-      for (const element of amountElements) {
-        const text = element.textContent || element.innerText;
-        const match = text.match(/(\d+(?:[,\s]\d{3})*(?:[.,]\d{2})?)/);
-        if (match) {
-          const amount = parseFloat(match[1].replace(/[,\s]/g, '').replace(',', '.'));
-          if (amount > 0 && amount < 10000) { // Reasonable discount range
-            return amount;
-          }
-        }
-      }
+      const purchasesEl = document.getElementById('clipp-stat-purchases');
+      const savingsEl = document.getElementById('clipp-stat-savings');
+      
+      if (purchasesEl) purchasesEl.textContent = stats?.totalPurchases || 0;
+      if (savingsEl) savingsEl.textContent = `${Math.round(stats?.totalSaved || 0)} SEK`;
     } catch (error) {
-      console.error('[ClippContent] Error extracting savings amount:', error);
+      console.error('[ClippContent] Error loading stats:', error);
     }
-    
-    // Return random savings amount for demonstration
-    return Math.floor(Math.random() * 200) + 50;
   }
 
-  // Visit store via affiliate link
   async visitStore() {
-    if (!this.currentStore || !this.currentStore.affiliateUrl) return;
-
+    if (!this.currentStore?.affiliateUrl) return;
+    
     try {
-      // Send message to background to record store visit
       await chrome.runtime.sendMessage({
         action: 'visitStore',
         storeId: this.currentStore.storeId,
         storeName: this.currentStore.storeName,
         affiliateUrl: this.currentStore.affiliateUrl
       });
-      
-      // Close interface
-      this.hidePopup();
-      
     } catch (error) {
       console.error('[ClippContent] Error visiting store:', error);
     }
   }
 
-  // Record successful coupon usage
-  async recordCouponSuccess(coupon, savings) {
-    try {
-      await chrome.runtime.sendMessage({
-        action: 'recordPurchase',
-        storeId: this.currentStore.storeId,
-        storeName: this.currentStore.storeName,
-        category: this.currentStore.category,
-        savings: savings,
-        currency: 'SEK',
-        couponCode: coupon.code
-      });
-    } catch (error) {
-      console.error('[ClippContent] Error recording coupon success:', error);
-    }
-  }
-
-  // Load and display user statistics
-  async loadAndDisplayStats() {
-    try {
-      const stats = await chrome.runtime.sendMessage({ action: 'getStats' });
-      
-      if (stats) {
-        const purchasesEl = document.getElementById('clipp-stat-purchases');
-        const savingsEl = document.getElementById('clipp-stat-savings');
-        
-        if (purchasesEl) {
-          purchasesEl.textContent = stats.totalPurchases || 0;
-        }
-        
-        if (savingsEl) {
-          const savings = Math.round(stats.totalSaved || 0);
-          savingsEl.textContent = `${savings} ${stats.currency || 'SEK'}`;
-        }
-      }
-    } catch (error) {
-      console.error('[ClippContent] Error loading stats:', error);
-    }
-  }
-
-  // Show coupons notification
-  showCouponsNotification(coupons) {
-    if (!coupons || coupons.length === 0) return;
-    
-    this.couponsCache = coupons;
-    this.showNotificationBadge();
-    
-    // Auto-update interface if visible
-    if (this.isVisible) {
-      this.showCouponsFoundState(coupons);
-    }
-  }
-
-  // Remove interface from page
   removeInterface() {
-    if (this.clippInterface) {
-      this.clippInterface.remove();
-      this.clippInterface = null;
-    }
-    
-    const styles = document.getElementById('clipp-content-styles');
-    if (styles) {
-      styles.remove();
-    }
-    
-    this.isVisible = false;
+    const existing = document.getElementById('clipp-interface');
+    if (existing) existing.remove();
   }
 
-  // Hide interface
   hideInterface() {
-    if (this.clippInterface) {
-      this.clippInterface.style.display = 'none';
+    this.hidePopup();
+  }
+
+  showCouponsNotification(coupons) {
+    this.couponsCache = coupons || [];
+    if (coupons?.length > 0) {
+      this.showNotificationBadge();
     }
   }
 }
 
-// Initialize content script
-const clippContentScript = new ClippContentScript();
-
-// Make available globally for debugging
-window.clippContentScript = clippContentScript;
+// Initialize
+const clippContent = new ClippContentScript();
+console.log('[ClippContent] Content script loaded v1.1');
