@@ -1,4 +1,4 @@
-// Clipp Enhanced Background Service Worker
+// Clipp Enhanced Background Service Worker v1.1
 // Load services
 importScripts('services/CouponService.js', 'services/StatisticsService.js');
 
@@ -9,12 +9,14 @@ class ClippBackground {
     this.couponService = new CouponService();
     this.statisticsService = new StatisticsService();
     this.scheduledTasks = new Map();
+    this.notifiedTabs = new Set(); // Track tabs we've shown notifications for
+    this.couponCountPerTab = new Map(); // Track coupon counts per tab
     
     this.init();
   }
 
   async init() {
-    console.log('[ClippBackground] Initializing Clipp extension');
+    console.log('[ClippBackground] Initializing Clipp extension v1.1');
     
     // Initialize services
     await this.loadConfiguration();
@@ -23,19 +25,20 @@ class ClippBackground {
     // Set up scheduled tasks
     this.setupScheduledTasks();
     
+    // Clear badge on startup
+    await this.clearBadge();
+    
     console.log('[ClippBackground] Clipp extension initialized successfully');
   }
 
   // Load stores and language configuration
   async loadConfiguration() {
     try {
-      // Load stores configuration
       const storesResponse = await fetch(chrome.runtime.getURL('config/stores.json'));
       const storesData = await storesResponse.json();
       this.stores = storesData.stores || [];
       console.log(`[ClippBackground] Loaded ${this.stores.length} stores`);
 
-      // Load language configuration
       const svResponse = await fetch(chrome.runtime.getURL('locales/sv.json'));
       const enResponse = await fetch(chrome.runtime.getURL('locales/en.json'));
       
@@ -52,24 +55,112 @@ class ClippBackground {
 
   // Set up scheduled background tasks
   setupScheduledTasks() {
-    // Schedule coupon cache refresh every hour
     chrome.alarms.create('refreshCouponCache', { 
       delayInMinutes: 1, 
       periodInMinutes: 60 
     });
 
-    // Schedule weekly cleanup of old data
     chrome.alarms.create('weeklyCleanup', { 
       delayInMinutes: 60, 
-      periodInMinutes: 60 * 24 * 7 // Weekly
+      periodInMinutes: 60 * 24 * 7
     });
 
     console.log('[ClippBackground] Scheduled tasks set up');
   }
 
+  // ==================== BADGE NOTIFICATION SYSTEM ====================
+
+  // Update badge with coupon count
+  async updateBadge(tabId, count) {
+    try {
+      if (count > 0) {
+        await chrome.action.setBadgeText({ 
+          text: count.toString(), 
+          tabId: tabId 
+        });
+        await chrome.action.setBadgeBackgroundColor({ 
+          color: '#22c55e', // Green
+          tabId: tabId 
+        });
+        
+        // Store the count
+        this.couponCountPerTab.set(tabId, count);
+        
+        console.log(`[ClippBackground] Badge updated for tab ${tabId}: ${count} coupons`);
+      } else {
+        await this.clearBadge(tabId);
+      }
+    } catch (error) {
+      console.error('[ClippBackground] Error updating badge:', error);
+    }
+  }
+
+  // Clear badge
+  async clearBadge(tabId = null) {
+    try {
+      if (tabId) {
+        await chrome.action.setBadgeText({ text: '', tabId: tabId });
+        this.couponCountPerTab.delete(tabId);
+      } else {
+        await chrome.action.setBadgeText({ text: '' });
+        this.couponCountPerTab.clear();
+      }
+    } catch (error) {
+      console.error('[ClippBackground] Error clearing badge:', error);
+    }
+  }
+
+  // Show notification badge for new coupons
+  async showNewCouponsNotification(tabId, store, count) {
+    const tabKey = `${tabId}-${store.storeId}`;
+    
+    // Don't notify twice for the same tab/store combination
+    if (this.notifiedTabs.has(tabKey)) {
+      return;
+    }
+    
+    this.notifiedTabs.add(tabKey);
+    
+    // Update badge
+    await this.updateBadge(tabId, count);
+    
+    // Get user's language preference
+    const result = await chrome.storage.local.get(['clippLanguage']);
+    const lang = result.clippLanguage || 'sv';
+    const langData = this.languageData[lang];
+    
+    // Create notification
+    const notificationId = `clipp-coupons-${tabId}-${Date.now()}`;
+    
+    try {
+      await chrome.notifications.create(notificationId, {
+        type: 'basic',
+        iconUrl: chrome.runtime.getURL('icons/icon128.png'),
+        title: langData?.popup?.store_status?.found_coupons || 'Rabattkoder hittade!',
+        message: lang === 'sv' 
+          ? `${count} rabattkod${count > 1 ? 'er' : ''} hittad${count > 1 ? 'e' : ''} för ${store.storeName}!`
+          : `${count} coupon${count > 1 ? 's' : ''} found for ${store.storeName}!`,
+        priority: 2
+      });
+      
+      // Auto-close notification after 5 seconds
+      setTimeout(() => {
+        chrome.notifications.clear(notificationId);
+      }, 5000);
+      
+    } catch (error) {
+      // Notifications might not be available
+      console.log('[ClippBackground] Notifications not available:', error.message);
+    }
+  }
+
   // Handle tab updates to inject Clipp
   async handleTabUpdate(tabId, changeInfo, tab) {
     if (changeInfo.status !== 'complete' || !tab.url) return;
+
+    // Clear notification tracking for this tab on navigation
+    const keysToRemove = [...this.notifiedTabs].filter(key => key.startsWith(`${tabId}-`));
+    keysToRemove.forEach(key => this.notifiedTabs.delete(key));
 
     try {
       const supportedStore = this.findSupportedStore(tab.url);
@@ -77,26 +168,50 @@ class ClippBackground {
       if (supportedStore) {
         console.log(`[ClippBackground] Supported store detected: ${supportedStore.storeName}`);
         
+        // Check if on checkout page
+        const isCheckout = this.isCheckoutPage(tab.url);
+        
         // Inject content script with store information
         await chrome.tabs.sendMessage(tabId, {
           action: 'initializeClipp',
-          store: supportedStore
+          store: supportedStore,
+          isCheckout: isCheckout
         });
 
-        // Record store visit for analytics
+        // Record store visit
         await this.statisticsService.recordStoreVisit(
           supportedStore.storeId, 
           supportedStore.storeName, 
           supportedStore.affiliateUrl
         );
 
-        // Pre-fetch coupons in background
-        this.prefetchCouponsForStore(supportedStore);
+        // Pre-fetch coupons and update badge
+        this.prefetchCouponsForStore(supportedStore, tabId);
+      } else {
+        // Clear badge for non-supported sites
+        await this.clearBadge(tabId);
       }
     } catch (error) {
-      // Silently handle errors - content script might not be ready
-      console.debug('[ClippBackground] Tab message failed (normal if content script not loaded):', error.message);
+      console.debug('[ClippBackground] Tab message failed:', error.message);
     }
+  }
+
+  // Check if URL is a checkout page
+  isCheckoutPage(url) {
+    const checkoutPatterns = [
+      /checkout/i,
+      /cart/i,
+      /varukorg/i,
+      /kassa/i,
+      /payment/i,
+      /betalning/i,
+      /order/i,
+      /bestall/i,
+      /confirm/i,
+      /bekrafta/i
+    ];
+    
+    return checkoutPatterns.some(pattern => pattern.test(url));
   }
 
   // Find supported store from URL
@@ -116,13 +231,30 @@ class ClippBackground {
     }
   }
 
-  // Pre-fetch coupons for faster user experience
-  async prefetchCouponsForStore(store) {
+  // Pre-fetch coupons and show badge
+  async prefetchCouponsForStore(store, tabId) {
     try {
       console.log(`[ClippBackground] Pre-fetching coupons for ${store.storeName}`);
       const coupons = await this.couponService.findCouponsForStore(store);
       
       if (coupons && coupons.length > 0) {
+        // Update badge with coupon count
+        await this.updateBadge(tabId, coupons.length);
+        
+        // Show notification
+        await this.showNewCouponsNotification(tabId, store, coupons.length);
+        
+        // Notify content script
+        try {
+          await chrome.tabs.sendMessage(tabId, {
+            action: 'couponsFound',
+            coupons: coupons,
+            count: coupons.length
+          });
+        } catch (e) {
+          // Content script might not be ready
+        }
+        
         // Record coupon discovery
         await this.statisticsService.recordCouponFound(
           store.storeId, 
@@ -150,11 +282,17 @@ class ClippBackground {
         case 'applyCoupon':
           return await this.handleApplyCoupon(request, sender);
           
+        case 'testCoupon':
+          return await this.handleTestCoupon(request, sender);
+          
         case 'updateStats':
           return await this.handleUpdateStats(request);
           
         case 'recordPurchase':
           return await this.handleRecordPurchase(request);
+          
+        case 'recordSuccess':
+          return await this.handleRecordSuccess(request);
           
         case 'getStats':
           return await this.handleGetStats(request);
@@ -170,6 +308,12 @@ class ClippBackground {
           
         case 'visitStore':
           return await this.handleVisitStore(request);
+          
+        case 'clearBadge':
+          if (sender.tab) {
+            await this.clearBadge(sender.tab.id);
+          }
+          return { success: true };
           
         case 'exportUserData':
           return await this.handleExportUserData();
@@ -196,8 +340,10 @@ class ClippBackground {
     try {
       const coupons = await this.couponService.findCouponsForStore(request.store);
       
-      // Record coupon discovery
-      if (coupons && coupons.length > 0) {
+      // Update badge if we have a tab
+      if (sender?.tab?.id && coupons && coupons.length > 0) {
+        await this.updateBadge(sender.tab.id, coupons.length);
+        
         await this.statisticsService.recordCouponFound(
           request.store.storeId,
           request.store.storeName,
@@ -224,8 +370,13 @@ class ClippBackground {
     }
 
     try {
+      const tabId = request.tabId || sender?.tab?.id;
+      if (!tabId) {
+        return { success: false, error: 'No tab ID available' };
+      }
+
       // Send message to content script to apply the coupon
-      const result = await chrome.tabs.sendMessage(sender.tab.id, {
+      const result = await chrome.tabs.sendMessage(tabId, {
         action: 'applyCouponToPage',
         code: request.code,
         store: request.store
@@ -244,7 +395,6 @@ class ClippBackground {
     } catch (error) {
       console.error('[ClippBackground] Error applying coupon:', error);
       
-      // Record failed application
       await this.statisticsService.recordCouponApplication(
         request.store.storeId,
         request.store.storeName,
@@ -257,7 +407,50 @@ class ClippBackground {
     }
   }
 
-  // Handle statistics updates (legacy - prefer recordPurchase)
+  // Handle automatic coupon testing
+  async handleTestCoupon(request, sender) {
+    if (!request.code || !request.store) {
+      return { success: false, error: 'Coupon code and store information required' };
+    }
+
+    try {
+      const tabId = sender?.tab?.id;
+      if (!tabId) {
+        return { success: false, error: 'No tab ID available' };
+      }
+
+      // Send test request to content script
+      const result = await chrome.tabs.sendMessage(tabId, {
+        action: 'testCouponOnPage',
+        code: request.code,
+        store: request.store
+      });
+
+      return result;
+    } catch (error) {
+      console.error('[ClippBackground] Error testing coupon:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Handle recording success
+  async handleRecordSuccess(request) {
+    try {
+      await this.statisticsService.recordCouponApplication(
+        request.store?.storeId || 'unknown',
+        request.store?.storeName || 'Unknown',
+        request.couponCode,
+        true,
+        request.savings || 0
+      );
+      return { success: true };
+    } catch (error) {
+      console.error('[ClippBackground] Error recording success:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Handle statistics updates
   async handleUpdateStats(request) {
     try {
       const stats = await this.statisticsService.recordPurchase(
@@ -327,7 +520,6 @@ class ClippBackground {
         );
       }
       
-      // Open the store in a new tab
       await chrome.tabs.create({ url: request.affiliateUrl });
       
       return { success: true };
@@ -359,7 +551,7 @@ class ClippBackground {
     }
   }
 
-  // Handle alarm events (scheduled tasks)
+  // Handle alarm events
   async handleAlarm(alarm) {
     console.log(`[ClippBackground] Handling alarm: ${alarm.name}`);
     
@@ -377,21 +569,20 @@ class ClippBackground {
     }
   }
 
-  // Refresh coupon cache for active stores
+  // Refresh coupon cache
   async refreshCouponCache() {
     console.log('[ClippBackground] Starting scheduled coupon cache refresh');
     
     const activeStores = this.stores.filter(store => store.active);
     let refreshCount = 0;
     
-    for (const store of activeStores.slice(0, 10)) { // Limit to 10 stores per refresh to avoid rate limits
+    for (const store of activeStores.slice(0, 10)) {
       try {
         const coupons = await this.couponService.findCouponsForStore(store);
         if (coupons && coupons.length > 0) {
           refreshCount++;
         }
         
-        // Add delay between requests to be respectful to APIs
         await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (error) {
         console.error(`[ClippBackground] Error refreshing cache for ${store.storeName}:`, error);
@@ -401,20 +592,25 @@ class ClippBackground {
     console.log(`[ClippBackground] Completed coupon cache refresh for ${refreshCount} stores`);
   }
 
-  // Perform weekly cleanup of old data
+  // Perform weekly cleanup
   async performWeeklyCleanup() {
     console.log('[ClippBackground] Starting weekly cleanup');
     
     try {
-      // This could include cleanup tasks like:
-      // - Removing old transaction logs
-      // - Clearing expired coupon cache
-      // - Optimizing storage usage
-      
+      this.notifiedTabs.clear();
+      this.couponCountPerTab.clear();
       console.log('[ClippBackground] Weekly cleanup completed');
     } catch (error) {
       console.error('[ClippBackground] Error during weekly cleanup:', error);
     }
+  }
+
+  // Handle tab removal
+  handleTabRemoved(tabId) {
+    // Clean up tracking for removed tabs
+    const keysToRemove = [...this.notifiedTabs].filter(key => key.startsWith(`${tabId}-`));
+    keysToRemove.forEach(key => this.notifiedTabs.delete(key));
+    this.couponCountPerTab.delete(tabId);
   }
 }
 
@@ -430,6 +626,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   clippBackground.handleTabUpdate(tabId, changeInfo, tab);
 });
 
+chrome.tabs.onRemoved.addListener((tabId) => {
+  clippBackground.handleTabRemoved(tabId);
+});
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   clippBackground.handleMessage(request, sender, sendResponse)
     .then(response => sendResponse(response))
@@ -438,11 +638,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       sendResponse({ success: false, error: error.message });
     });
   
-  return true; // Keep message channel open for async response
+  return true;
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
   clippBackground.handleAlarm(alarm);
 });
 
-console.log('[ClippBackground] Background script loaded successfully');
+// Handle notification clicks
+chrome.notifications.onClicked.addListener((notificationId) => {
+  if (notificationId.startsWith('clipp-coupons-')) {
+    const tabIdMatch = notificationId.match(/clipp-coupons-(\d+)/);
+    if (tabIdMatch) {
+      const tabId = parseInt(tabIdMatch[1]);
+      chrome.tabs.update(tabId, { active: true });
+    }
+  }
+});
+
+console.log('[ClippBackground] Background script loaded successfully v1.1');

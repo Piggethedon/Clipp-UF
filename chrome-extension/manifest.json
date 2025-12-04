@@ -1,12 +1,14 @@
 {
   "manifest_version": 3,
   "name": "Clipp",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Spara pengar smartare – automatiskt. Clipp hittar och applicerar rabattkoder för svenska butiker.",
   "permissions": [
     "activeTab",
     "storage",
-    "tabs"
+    "tabs",
+    "notifications",
+    "clipboardWrite"
   ],
   "host_permissions": [
     "https://zalando.se/*",
@@ -24,18 +26,30 @@
     {
       "matches": [
         "https://zalando.se/*",
+        "https://*.zalando.se/*",
         "https://adlibris.com/*", 
+        "https://*.adlibris.com/*",
         "https://lyko.com/*",
+        "https://*.lyko.com/*",
         "https://cdon.se/*",
+        "https://*.cdon.se/*",
         "https://tradera.com/*",
         "https://hm.com/*",
         "https://www2.hm.com/*",
         "https://ahlens.se/*",
+        "https://*.ahlens.se/*",
         "https://stadium.se/*",
+        "https://*.stadium.se/*",
         "https://xxl.se/*",
-        "https://boozt.com/*"
+        "https://*.xxl.se/*",
+        "https://boozt.com/*",
+        "https://*.boozt.com/*",
+        "https://elgiganten.se/*",
+        "https://*.elgiganten.se/*",
+        "https://netonnet.se/*",
+        "https://*.netonnet.se/*"
       ],
-      "js": ["content.js"],
+      "js": ["services/CouponTester.js", "content.js"],
       "css": ["content.css"],
       "run_at": "document_end"
     }
